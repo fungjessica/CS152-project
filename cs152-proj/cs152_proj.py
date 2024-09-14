@@ -10,6 +10,7 @@ window.configure(background="pink")
 
 text = Label(window, text="Homepage")
 text.pack()
-
+button = Button(window, text="button")
+button.pack(side='top')
 #leave at bottom! 
 window.mainloop() 
