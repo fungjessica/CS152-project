@@ -1,0 +1,4 @@
+references: 
+https://www.pythonguis.com/tutorials/create-gui-tkinter/
+https://www.geeksforgeeks.org/python-gui-tkinter/#
+https://customtkinter.tomschimansky.com
