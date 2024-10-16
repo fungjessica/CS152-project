@@ -1,0 +1,9 @@
+references: 
+https://www.pythonguis.com/tutorials/create-gui-tkinter/
+https://www.geeksforgeeks.org/python-gui-tkinter/#
+https://customtkinter.tomschimansky.com
+https://www.geeksforgeeks.org/self-in-python-class/
+https://stackoverflow.com/questions/74393442/what-is-the-purpose-of-the-master-parameter-in-the-tkinter-variable-class-subc
+https://www.geeksforgeeks.org/enumerate-in-python/
+https://www.w3schools.com/python/ref_func_enumerate.asp
+https://customtkinter.tomschimansky.com/documentation/widgets/textbox
