@@ -53,7 +53,7 @@ class GroceryApp:
         # Button to view saved recipes
         saved_recipes_button = ctk.CTkButton(
             self.root, 
-            text="Saved Recipes", 
+            text="See Saved Recipes", 
             command=self.view_saved_recipes,
             width=250, 
             height=50, 
