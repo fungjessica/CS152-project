@@ -1,4 +1,4 @@
-import customtkinter as ctk
+import customtkinter as ct
 
 class GroceryApp:
     def __init__(self, root):
