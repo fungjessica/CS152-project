@@ -13,9 +13,9 @@ def browse_groceries(root, controller):
     main_container.pack(pady=10, padx=10, fill="both", expand=True)
 
     # Adjust the grid weights to control how much space each frame takes
-    main_container.grid_columnconfigure(0, weight=1)  # Sidebar (weight can be adjusted to control size)
+    main_container.grid_columnconfigure(0, weight=1)  # Sidebar
     main_container.grid_columnconfigure(1, weight=3)  # Main content frame (higher weight = takes more space)
-    main_container.grid_rowconfigure(0, weight=1)     # Ensures both frames expand vertically
+    main_container.grid_rowconfigure(0, weight=1)     # Makes both frames expand vertically
 
     # Sidebar frame on the left for navigation buttons
     sidebar_frame = ctk.CTkFrame(main_container, width=200, height=600, corner_radius=10)
