@@ -1,9 +1,9 @@
 import customtkinter as ctk
 from homepage import show_homepage
-from create_list import create_list_flow
-from view_lists import view_lists
-from browse_groceries import browse_groceries
-from saved_recipes import view_saved_recipes
+from clist import create_list_flow
+from vlists import view_lists
+from bgroceries import browse_groceries
+from srecipes import view_saved_recipes
 
 class AppController:
     def __init__(self, root):
