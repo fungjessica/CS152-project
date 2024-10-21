@@ -60,9 +60,9 @@ def show_homepage(root, controller):
     # Mode Toggle Button (Bottom Left)
     controller.mode_toggle_button = ctk.CTkButton(
         root,
-        text="Switch to Light Mode" if controller.appearance_mode == "dark" else "Switch to Dark Mode",
+        text="Light Mode" if controller.appearance_mode == "dark" else "Dark Mode",
         command=lambda: toggle_mode(controller),
-        width=150,
+        width=100,
         height=30,
         corner_radius=10,
         font=("Helvetica", 12)

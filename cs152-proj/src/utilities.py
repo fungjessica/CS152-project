@@ -10,11 +10,11 @@ def toggle_mode(controller):
     if controller.appearance_mode == "dark":
         controller.appearance_mode = "light"
         ctk.set_appearance_mode("light")
-        controller.mode_toggle_button.configure(text="Switch to Dark Mode")
+        controller.mode_toggle_button.configure(text="Dark Mode")
     else:
         controller.appearance_mode = "dark"
         ctk.set_appearance_mode("dark")
-        controller.mode_toggle_button.configure(text="Switch to Light Mode")
+        controller.mode_toggle_button.configure(text="Light Mode")
 
 def quit_app(root):
     """Creates a button that quits the application."""
