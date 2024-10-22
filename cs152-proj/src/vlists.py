@@ -220,23 +220,87 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
 #     else:
 #         done_frame.pack_forget()  # Hide if no done items
 
+# def rename_list(root, controller, idx):
+#     """Renames a grocery list based on user input."""
+#     # Get the current name of the list using its index
+#     list_name = list(controller.grocery_lists.keys())[idx]
+
+#     # Ask the user to input a new name for the list
+#     new_name = ctk.CTkInputDialog(title="Rename List", text="Enter new name:").get_input()
+
+#     # If new_name is None, the user canceled the dialog
+#     if new_name is None:
+#         # User clicked 'Cancel', just return without showing the warning
+#         return
+
+#     # If the new name is valid (not blank), rename the list
+#     if new_name and new_name.strip():
+#         items = controller.grocery_lists.pop(list_name) # Remove the old list name
+#         controller.grocery_lists[new_name.strip()] = items # Add the list under the new name
+#         view_lists(root, controller) # Refresh the view after renaming
+#     else:
+#         # Show a warning if the user did not provide a valid name
+#         warning_label = ctk.CTkLabel(root, text="No valid name entered! Rename canceled.", font=("Helvetica", 12), text_color="red")
+#         warning_label.pack(pady=5)
+
+#         # Schedule the warning label to disappear after 2 seconds (2000 milliseconds)
+#         root.after(2000, warning_label.pack_forget)
+
 def rename_list(root, controller, idx):
-    """Renames a grocery list based on user input."""
-    # Get the current name of the list using its index
+    """Custom Rename List dialog."""
     list_name = list(controller.grocery_lists.keys())[idx]
 
-    # Ask the user to input a new name for the list
-    new_name = ctk.CTkInputDialog(title="Rename List", text="Enter new name:").get_input()
+    # Create a new Toplevel window for the rename dialog
+    dialog_window = ctk.CTkToplevel(root)
+    dialog_window.title("Rename List")
+    dialog_window.geometry("300x180")
 
-    # If the new name is valid (not blank), rename the list
-    if new_name and new_name.strip():
-        items = controller.grocery_lists.pop(list_name) # Remove the old list name
-        controller.grocery_lists[new_name.strip()] = items # Add the list under the new name
-        view_lists(root, controller) # Refresh the view after renaming
-    else:
-        # Show a warning if the user did not provide a valid name
-        warning_label = ctk.CTkLabel(root, text="No valid name entered! Rename canceled.", font=("Helvetica", 12), fg="red")
-        warning_label.pack(pady=5)
+    # Lift the dialog window to the top of the window stack
+    dialog_window.lift()
+    
+    # Force the dialog to stay on top of the main window
+    dialog_window.attributes('-topmost', True)
+
+    # Bring focus to the dialog window
+    dialog_window.focus()
+
+    # Entry field for the new list name
+    label = ctk.CTkLabel(dialog_window, text="Enter new name:")
+    label.pack(pady=10)
+
+    list_name_entry = ctk.CTkEntry(dialog_window)
+    list_name_entry.pack(pady=5)
+
+    warning_label = ctk.CTkLabel(dialog_window, text="", text_color="red")
+    warning_label.pack(pady=(5,5))
+
+    def confirm_rename():
+        """Function to handle the renaming process."""
+        new_name = list_name_entry.get().strip()  # Get the entered new name and strip spaces
+
+        if new_name:  # If valid name, proceed to rename
+            items = controller.grocery_lists.pop(list_name)
+            controller.grocery_lists[new_name] = items
+            view_lists(root, controller)  # Refresh list view
+            dialog_window.destroy()  # Close the dialog
+        else:
+            # Show warning and keep the dialog open
+            warning_label.configure(text="Name cannot be empty!")
+
+            # Make the warning disappear after 2 seconds
+            root.after(2000, lambda: warning_label.configure(text=""))
+
+    # OK Button to confirm renaming
+    ok_button = ctk.CTkButton(
+        dialog_window, text="Ok", command=confirm_rename
+    )
+    ok_button.pack(side="left", padx=10, pady=(0,10))
+
+    # Cancel Button to close the dialog
+    cancel_button = ctk.CTkButton(
+        dialog_window, text="Cancel", command=dialog_window.destroy
+    )
+    cancel_button.pack(side="right", padx=10, pady=(0,10))
 
 def delete_list(root, controller, idx):
     """Deletes a grocery list."""

@@ -10,11 +10,11 @@ def create_list_flow(root, controller):
 
     # Entry for the grocery list name
     list_name_entry = ctk.CTkEntry(root, width=200,justify="center", placeholder_text="Enter list name")
-    list_name_entry.pack(pady=20)
+    list_name_entry.pack(pady=10)
 
     # Warning label for blank entry, initially hidden
-    warning_label = ctk.CTkLabel(root, text="", font=("Helvetica", 12), fg_color=None)
-    warning_label.pack(pady=5)
+    warning_label = ctk.CTkLabel(root, text="", font=("Helvetica", 12), text_color="red")
+    warning_label.pack(pady=10)
 
     # Button to proceed to the "Choose Items" step
     # First, it validates if the list name is entered correctly (not blank)
@@ -47,6 +47,9 @@ def validate_list_name(root, controller, list_name_entry, warning_label):
 
     if not list_name:  # If the list name is blank
         warning_label.configure(text="List name cannot be blank! Please enter a name.")  # Display the warning
+
+        # Make the warning disappear after 2 seconds
+        root.after(2000, lambda: warning_label.configure(text=""))
     else:
         # If valid list name, proceed to the next step
         choose_items_flow(root, controller, list_name)
