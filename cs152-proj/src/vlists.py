@@ -220,32 +220,6 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
 #     else:
 #         done_frame.pack_forget()  # Hide if no done items
 
-# def rename_list(root, controller, idx):
-#     """Renames a grocery list based on user input."""
-#     # Get the current name of the list using its index
-#     list_name = list(controller.grocery_lists.keys())[idx]
-
-#     # Ask the user to input a new name for the list
-#     new_name = ctk.CTkInputDialog(title="Rename List", text="Enter new name:").get_input()
-
-#     # If new_name is None, the user canceled the dialog
-#     if new_name is None:
-#         # User clicked 'Cancel', just return without showing the warning
-#         return
-
-#     # If the new name is valid (not blank), rename the list
-#     if new_name and new_name.strip():
-#         items = controller.grocery_lists.pop(list_name) # Remove the old list name
-#         controller.grocery_lists[new_name.strip()] = items # Add the list under the new name
-#         view_lists(root, controller) # Refresh the view after renaming
-#     else:
-#         # Show a warning if the user did not provide a valid name
-#         warning_label = ctk.CTkLabel(root, text="No valid name entered! Rename canceled.", font=("Helvetica", 12), text_color="red")
-#         warning_label.pack(pady=5)
-
-#         # Schedule the warning label to disappear after 2 seconds (2000 milliseconds)
-#         root.after(2000, warning_label.pack_forget)
-
 def rename_list(root, controller, idx):
     """Custom Rename List dialog."""
     list_name = list(controller.grocery_lists.keys())[idx]
