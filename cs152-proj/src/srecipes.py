@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from utilities import clear_window
+from recipe_data import saved_recipes
 
 def view_saved_recipes(root, controller):
     """Displays the saved recipes."""
@@ -7,9 +8,6 @@ def view_saved_recipes(root, controller):
 
     header = ctk.CTkLabel(root, text="Saved Recipes", font=("Helvetica", 24, "bold"))
     header.pack(pady=30)
-
-    # Example saved recipes
-    saved_recipes = ["Pancakes", "Spaghetti", "Salad"]
 
     if not saved_recipes:
         empty_label = ctk.CTkLabel(root, text="No saved recipes available.", font=("Helvetica", 16))

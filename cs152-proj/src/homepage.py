@@ -57,6 +57,17 @@ def show_homepage(root, controller):
     )
     browse_button.pack(pady=20)
 
+    browse_recipes_button = ctk.CTkButton(
+        root, 
+        text="Browse Recipes", 
+        command=controller.show_browse_recipes,
+        width=250,
+        height=50,
+        corner_radius=10,
+        font=("Helvetica", 16)
+    )
+    browse_recipes_button.pack(pady=20)
+    
     # Mode Toggle Button (Bottom Left)
     controller.mode_toggle_button = ctk.CTkButton(
         root,

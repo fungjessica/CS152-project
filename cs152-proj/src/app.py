@@ -4,6 +4,7 @@ from clist import create_list_flow
 from vlists import view_lists
 from bgroceries import browse_groceries
 from srecipes import view_saved_recipes
+from brecipes import browse_recipes
 
 class AppController:
     def __init__(self, root):
@@ -37,6 +38,9 @@ class AppController:
 
     def show_saved_recipes(self):
         view_saved_recipes(self.root, self)
+
+    def show_browse_recipes(self):
+        browse_recipes(self.root, self)
 
 def run_app():
     root = ctk.CTk()  # Initialize the main window
