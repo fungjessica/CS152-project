@@ -1,28 +1,27 @@
 import customtkinter as ctk
 from utilities import clear_window
-from bgroceries import browse_groceries
-from recipe_data import grocery_list
 
 def create_list_flow(root, controller):
-    """Flow to enter the grocery list name and save it immediately."""
+    """Flow to enter the grocery list name."""
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="Create a New Grocery List", font=("Helvetica", 24, "bold"))
     header.pack(pady=30)
 
     # Entry for the grocery list name
-    list_name_entry = ctk.CTkEntry(root, width=200, justify="center", placeholder_text="Enter list name")
+    list_name_entry = ctk.CTkEntry(root, width=200,justify="center", placeholder_text="Enter list name")
     list_name_entry.pack(pady=10)
 
     # Warning label for blank entry, initially hidden
     warning_label = ctk.CTkLabel(root, text="", font=("Helvetica", 12), text_color="red")
     warning_label.pack(pady=10)
 
-    # Button to proceed to the groceries page (and save the list)
+    # Button to proceed to the "Choose Items" step
+    # First, it validates if the list name is entered correctly (not blank)
     proceed_button = ctk.CTkButton(
         root,
-        text="Next: Browse Groceries",
-        command=lambda: validate_and_create_list(root, controller, list_name_entry, warning_label),
+        text="Next: Choose Items",
+        command=lambda: validate_list_name(root, controller, list_name_entry, warning_label),
         width=200,
         height=40,
         corner_radius=10,
@@ -42,18 +41,18 @@ def create_list_flow(root, controller):
     )
     back_button.pack(pady=10)
 
-def validate_and_create_list(root, controller, list_name_entry, warning_label):
-    """Validates the list name and creates the list if valid."""
-    list_name = list_name_entry.get().strip()
+def validate_list_name(root, controller, list_name_entry, warning_label):
+    """Validates the list name entry and shows a warning if blank."""
+    list_name = list_name_entry.get().strip()  # Get the list name and remove extra spaces
 
     if not list_name:  # If the list name is blank
-        warning_label.configure(text="List name cannot be blank! Please enter a name.")
+        warning_label.configure(text="List name cannot be blank! Please enter a name.")  # Display the warning
+
+        # Make the warning disappear after 2 seconds
         root.after(2000, lambda: warning_label.configure(text=""))
     else:
-        # If valid, create the list and save it, then go to browse groceries
-        create_list(root, controller, list_name)
-
-
+        # If valid list name, proceed to the next step
+        choose_items_flow(root, controller, list_name)
 
 def choose_items_flow(root, controller, list_name):
     """Allows the user to choose grocery items without setting quantities."""
@@ -201,14 +200,19 @@ def decrease_quantity(item, selected_items):
         selected_items[item]["quantity"].delete(0, "end")
         selected_items[item]["quantity"].insert(0, str(current_qty - 1))
 
-def create_list(root, controller, list_name, selected_items=None):
-    """Creates a grocery list and immediately saves it to the controller."""
-    if list_name:
-        # Create an empty grocery list and save it under the provided list name
-        controller.grocery_lists[list_name] = {}  # Empty list (no items selected yet)
-        print(f"Created and saved empty list: {list_name}")  # Debug: show the list was saved
-        
-        # Now, navigate to the Browse Groceries page
-        browse_groceries(root, controller, list_name)
-    else:
-        print("List name cannot be empty")  # Debug: Handle the empty list name scenario
+def create_list(root, controller, list_name, selected_items):
+    """Creates the grocery list and saves it to the controller."""
+    try:
+        # Create a dictionary of selected items and their quantities
+        controller.grocery_lists[list_name] = {
+            item: int(data["quantity"].get())
+            for item, data in selected_items.items()
+            if data["quantity"] is not None and data["quantity"].get().isdigit()
+        }
+
+        # Show the list of grocery lists after creating the list
+        controller.show_view_lists()  
+    except AttributeError:
+         # Display an error message if any item has an invalid quantity
+        error_label = ctk.CTkLabel(root, text="Error: Please ensure all selected items have a valid quantity.", font=("Helvetica", 12), fg="red")
+        error_label.pack(pady=5)
