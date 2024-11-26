@@ -1,0 +1,6 @@
+{
+    "Fruits": ["Apples", "Bananas", "Oranges", "Strawberries", "Watermelon", "Star Fruit", "Dragon Fruit", "Honey Dew"],
+    "Vegetables": ["Carrots", "Spinach", "Potatoes", "Bok Choy", "Broccoli", "Asparagus", "Artichoke", "Celery"],
+    "Dairy": ["2% Milk", "Almond Milk", "Soy Milk", "Cheese", "Butter", "Sour Cream", "Heavy Cream", "Ice Cream"],
+    "Meat": ["Chicken Breast", "Chicken Wings", "Ribeye", "Austrailian Wagyu", "Ground Beef", "Ground Pork", "Pork Butt", "Porkchops", "Impossible Meat"]
+}
