@@ -70,8 +70,10 @@ def browse_recipes(root, controller):
         for idx, item in enumerate(recipes_to_display):
             row = idx // 4
             column = idx % 4
+
             image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
-            item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  # Adjust size as needed
+            item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  
+            
             item_button = ctk.CTkButton(
                 recipes_frame, 
                 image=item_image,

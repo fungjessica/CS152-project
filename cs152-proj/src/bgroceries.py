@@ -66,12 +66,13 @@ def browse_groceries(root, controller):
                 column = idx % 4
 
                 # Load the image for the item
-                #image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
-                #item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  # Adjust size as needed
+                image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
+                item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  # Adjust size as needed
 
                 # Create a button with image and text
                 item_button = ctk.CTkButton(
                     groceries_frame,
+                    image=item_image,
                     text=item["name"], 
                     font=("Helvetica", 14), 
                     #image=item_image,

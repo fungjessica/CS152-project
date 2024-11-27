@@ -28,14 +28,14 @@
         {"name": "Ice Cream", "image": "icecream.png"}
     ],
     "Meat": [
-        {"name": "Chicken Breast", "image": "default.png"},
-        {"name": "Chicken Wings", "image": "default.png"},
-        {"name": "Ribeye", "image": "default.png"},
-        {"name": "Australian Wagyu", "image": "default.png"},
-        {"name": "Ground Beef", "image": "default.png"},
-        {"name": "Ground Pork", "image": "default.png"},
-        {"name": "Pork Butt", "image": "default.png"},
-        {"name": "Porkchops", "image": "default.png"},
-        {"name": "Impossible Meat", "image": "default.png"}
+        {"name": "Chicken Breast", "image": "chickenbreast.png"},
+        {"name": "Chicken Wings", "image": "chickenwings.png"},
+        {"name": "Chicken Thigh", "image": "chickenthigh.png"},
+        {"name": "Ribeye", "image": "ribeye.png"},
+        {"name": "Australian Wagyu", "image": "wagyu.png"},
+        {"name": "Ground Beef", "image": "groundbeef.png"},
+        {"name": "Ground Pork", "image": "groundpork.png"},
+        {"name": "Pork Butt", "image": "porkbutt.png"},
+        {"name": "Porkchops", "image": "porkchop.png"}
     ]
 }
