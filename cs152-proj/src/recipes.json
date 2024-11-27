@@ -1,7 +1,41 @@
 {
-    "Soup": ["Tomato Soup", "Chicken Soup", "Minestrone Soup", "Clam Chowder", "French Onion Soup", "Egg Drop Soup", "Borscht Soup", "Pozole"],
-    "Baked": ["Sushi Bake", "Lasagna", "Chicken Potpie", "Meatloaf", "Lemon Baked Cod", "Pizza", "Red Velvet Cake", "Chocolate Chip Cookies"],
-    "Fried/Deep Fried": ["Fish n Chips", "Lemon-Brined Fried Chicken", "Fried Calamari", "Tonkatsu", "Mozzarella Sticks", "Shrimp Tempura", "French Fries"],
-    "Vegetarian": ["Butter Chickpeas", "Bulgogi-Style Tofu", "Pesto Pasta", "Stuffed Peppers", "Vegetarian Enchiladas", "Falafel", "Ratatouille", "Lemon Ricotta Pasta"]
-  }
-  
+  "Soup": [
+    {"name": "Tomato Soup", "image": "tomatosoup.png"},
+    {"name": "Chicken Soup", "image": "chickensoup.png"},
+    {"name": "Minestrone Soup", "image": "minestrone.png"},
+    {"name": "Clam Chowder", "image": "clamchowder.png"},
+    {"name": "French Onion Soup", "image": "frenchonion.png"},
+    {"name": "Egg Drop Soup", "image": "eggdrop.png"},
+    {"name": "Borscht Soup", "image": "borscht.png"},
+    {"name": "Pozole", "image": "pozole.png"}
+  ],
+  "Baked": [
+    {"name": "Sushi Bake", "image": "sushibake.png"},
+    {"name": "Lasagna", "image": "lasagna.png"},
+    {"name": "Chicken Potpie", "image": "chickenpotpie.png"},
+    {"name": "Meatloaf", "image": "meatloaf.png"},
+    {"name": "Lemon Baked Cod", "image": "lemonbakedcod.png"},
+    {"name": "Pizza", "image": "pizza.png"},
+    {"name": "Red Velvet Cake", "image": "redvelvetcake.png"},
+    {"name": "Chocolate Chip Cookies", "image": "chocochipcookie.png"}
+  ],
+  "Fried/Deep Fried": [
+    {"name": "Fish n Chips", "image": "fishnchips.png"},
+    {"name": "Lemon-Brined Fried Chicken", "image": "friedchicken.png"},
+    {"name": "Fried Calamari", "image": "friedcalamari.png"},
+    {"name": "Tonkatsu", "image": "tonkatsu.png"},
+    {"name": "Mozzarella Sticks", "image": "mozzarellasticks.png"},
+    {"name": "Shrimp Tempura", "image": "shrimptempura.png"},
+    {"name": "French Fries", "image": "frenchfries.png"}
+  ],
+  "Vegetarian": [
+    {"name": "Butter Chickpeas", "image": "butterchicken.png"},
+    {"name": "Bulgogi-Style Tofu", "image": "tofu.png"},
+    {"name": "Pesto Pasta", "image": "pestopasta.png"},
+    {"name": "Stuffed Peppers", "image": "stuffedpeppers.png"},
+    {"name": "Vegetarian Enchiladas", "image": "enchilada.png"},
+    {"name": "Falafel", "image": "falafel.png"},
+    {"name": "Ratatouille", "image": "ratatouille.png"},
+    {"name": "Lemon Ricotta Pasta", "image": "definitelyricotta.png"}
+  ]
+}

@@ -3,6 +3,7 @@ import os
 import customtkinter as ctk
 from utilities import clear_window
 from recipe_data import saved_recipes
+from PIL import Image
 
 # Load the recipe data from the JSON file
 def load_recipes():
@@ -69,10 +70,13 @@ def browse_recipes(root, controller):
         for idx, item in enumerate(recipes_to_display):
             row = idx // 4
             column = idx % 4
-            
+            image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
+            item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  # Adjust size as needed
             item_button = ctk.CTkButton(
                 recipes_frame, 
-                text=item, 
+                image=item_image,
+                compound="top",
+                text=item["name"], 
                 font=("Helvetica", 14),
                 command=lambda item=item: set_selected_recipe(item),  
                 fg_color="transparent",
