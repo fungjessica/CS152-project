@@ -1,7 +1,7 @@
 {
     "Soup": ["Tomato Soup", "Chicken Soup", "Minestrone Soup", "Clam Chowder", "French Onion Soup", "Egg Drop Soup", "Borscht Soup", "Pozole"],
     "Baked": ["Sushi Bake", "Lasagna", "Chicken Potpie", "Meatloaf", "Lemon Baked Cod", "Pizza", "Red Velvet Cake", "Chocolate Chip Cookies"],
-    "Fried/Deep Fried": ["Fish n Chips", "Lemon-Brined Fried Chicken", "Fried Calamari", "Pork Tonkatsu", "Mozzarella Sticks", "Shrimp Tempura", "French Fries"],
+    "Fried/Deep Fried": ["Fish n Chips", "Lemon-Brined Fried Chicken", "Fried Calamari", "Tonkatsu", "Mozzarella Sticks", "Shrimp Tempura", "French Fries"],
     "Vegetarian": ["Butter Chickpeas", "Bulgogi-Style Tofu", "Pesto Pasta", "Stuffed Peppers", "Vegetarian Enchiladas", "Falafel", "Ratatouille", "Lemon Ricotta Pasta"]
   }
   

@@ -28,42 +28,57 @@ def browse_recipes(root, controller):
     main_container = ctk.CTkFrame(root)
     main_container.pack(pady=10, padx=10, fill="both", expand=True)
 
-    # Adjust the grid weights to control how much space each frame takes
-    main_container.grid_columnconfigure(0, weight=1)  # Sidebar
-    main_container.grid_columnconfigure(1, weight=3)  # Main content frame (higher weight = takes more space)
-    main_container.grid_rowconfigure(0, weight=1)     # Makes both frames expand vertically
-
     # Sidebar frame on the left for navigation buttons
-    sidebar_frame = ctk.CTkFrame(main_container, width=200, height=600, corner_radius=10)
+    sidebar_frame = ctk.CTkFrame(main_container, width=125, height=600, corner_radius=10)
     sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="ns")
+
+    # Prevent sidebar from resizing
+    sidebar_frame.grid_propagate(False)
+    sidebar_frame.pack_propagate(False)
+
+    # Configure the grid to keep sidebar fixed
+    main_container.grid_columnconfigure(0, weight=0, minsize=100)  # Fixed width for sidebar
+    main_container.grid_columnconfigure(1, weight=1)  # Main content adjusts to resizing
+    main_container.grid_rowconfigure(0, weight=1)  # Allow vertical resizing only for content
+
 
     # Load recipe categories from the JSON file
     recipe_data = load_recipes()
 
-    def show_recipes(category):
+    # Function to show recipes based on category or search query
+    def show_recipes(category=None, search_query=""):
         global selected_recipe
 
+        # Clear previous recipe buttons
         for widget in recipes_frame.winfo_children():
             widget.destroy()
 
-        header.configure(text=f"{category} Recipes")
+        header.configure(text="Recipes")
 
-        # Display the recipe items in the `recipes_frame`
-        if category in recipe_data:
-            recipe_categories = recipe_data[category]
-            for idx, item in enumerate(recipe_categories):
-                row = idx // 3  # Calculate the current row
-                column = idx % 3  # Calculate the current column (0, 1, 2 for each row)
-                # Display item label in the calculated row and column
-                item_button = ctk.CTkButton(
-                    recipes_frame, 
-                    text=item, 
-                    font=("Helvetica", 14),
-                    command=lambda item=item: set_selected_recipe(item),  
-                    fg_color="transparent",
-                    border_width=0
-                )
-                item_button.grid(row=row, column=column, padx=60, pady=60)
+        # Filter recipes based on category and search query
+        if category:
+            recipes_to_display = recipe_data.get(category, [])
+        else:
+            recipes_to_display = []
+            for category, recipes in recipe_data.items():
+                for recipe in recipes:
+                    if search_query.lower() in recipe.lower():  # Case insensitive search
+                        recipes_to_display.append(recipe)
+
+        # Display the filtered recipes
+        for idx, item in enumerate(recipes_to_display):
+            row = idx // 4
+            column = idx % 4
+            
+            item_button = ctk.CTkButton(
+                recipes_frame, 
+                text=item, 
+                font=("Helvetica", 14),
+                command=lambda item=item: set_selected_recipe(item),  
+                fg_color="transparent",
+                border_width=0
+            )
+            item_button.grid(row=row, column=column, padx=60, pady=60)
 
     # Buttons in the sidebar (pass the category names)
     button1 = ctk.CTkButton(
@@ -88,7 +103,7 @@ def browse_recipes(root, controller):
 
     button3 = ctk.CTkButton(
         sidebar_frame, 
-        text="Fried/Deep Fried", 
+        text="Deep Fried", 
         command=lambda: show_recipes("Fried/Deep Fried"),
         width=120,
         height=40,
@@ -108,7 +123,7 @@ def browse_recipes(root, controller):
 
     save_button = ctk.CTkButton(
         sidebar_frame, 
-        text="Save Recipe", 
+        text="Save", 
         command=save_recipe,
         width=120,
         height=40,
@@ -124,7 +139,14 @@ def browse_recipes(root, controller):
     search_entry = ctk.CTkEntry(main_frame, placeholder_text="Search for recipes...", width=520)
     search_entry.pack(pady=10)
 
-    # Frame to display grocery items in the main frame
+    # Function to update the recipe display based on search query
+    def on_search_change(event=None):
+        search_query = search_entry.get()
+        show_recipes(search_query=search_query)
+
+    search_entry.bind("<KeyRelease>", on_search_change)
+
+    # Frame to display recipe items in the main frame
     recipes_frame = ctk.CTkFrame(main_frame)
     recipes_frame.pack(fill="both", expand=True, padx=20, pady=20)
 

@@ -1,6 +1,41 @@
 {
-    "Fruits": ["Apple", "Banana", "Orange"],
-    "Vegetables": ["Carrot", "Spinach", "Potato"],
-    "Dairy": ["Milk", "Cheese", "Butter"],
-    "Meat": ["Chicken", "Beef", "Pork"]
+    "Fruits": [
+        {"name": "Apple", "image": "applePNG.png"},
+        {"name": "Bananas", "image": "Banana.png"},
+        {"name": "Oranges", "image": "orange.png"},
+        {"name": "Strawberries", "image": "strawberry.png"},
+        {"name": "Watermelon", "image": "watermelon.png"},
+        {"name": "Star Fruit", "image": "starfruit.png"},
+        {"name": "Dragon Fruit", "image": "dragonfruit.png"},
+        {"name": "Honey Dew", "image": "honeydew.png"}
+    ],
+    "Vegetables": [
+        {"name": "Carrots", "image": "carrot.png"},
+        {"name": "Spinach", "image": "spinach.png"},
+        {"name": "Potatoes", "image": "potato.png"},
+        {"name": "Bok Choy", "image": "bokchoy.png"},
+        {"name": "Broccoli", "image": "broccoli.png"},
+        {"name": "Asparagus", "image": "asparagus.png"},
+        {"name": "Artichoke", "image": "artichoke.png"},
+        {"name": "Celery", "image": "celery.png"}
+    ],
+    "Dairy": [
+        {"name": "Milk", "image": "milk.png"},
+        {"name": "Cheese", "image": "cheese.png"},
+        {"name": "Butter", "image": "butter.png"},
+        {"name": "Sour Cream", "image": "sourcream.png"},
+        {"name": "Heavy Cream", "image": "heavycream.png"},
+        {"name": "Ice Cream", "image": "icecream.png"}
+    ],
+    "Meat": [
+        {"name": "Chicken Breast", "image": "default.png"},
+        {"name": "Chicken Wings", "image": "default.png"},
+        {"name": "Ribeye", "image": "default.png"},
+        {"name": "Australian Wagyu", "image": "default.png"},
+        {"name": "Ground Beef", "image": "default.png"},
+        {"name": "Ground Pork", "image": "default.png"},
+        {"name": "Pork Butt", "image": "default.png"},
+        {"name": "Porkchops", "image": "default.png"},
+        {"name": "Impossible Meat", "image": "default.png"}
+    ]
 }
