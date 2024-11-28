@@ -4,27 +4,25 @@ from clist import create_list_flow
 from vlists import view_lists
 from bgroceries import browse_groceries
 from srecipes import view_saved_recipes
+from brecipes import browse_recipes
 
 class AppController:
     def __init__(self, root):
         self.root = root
-        self.grocery_lists = {}  # Central storage for all grocery lists
-        self.done_items = {}     # Storage for completed items
+        self.grocery_lists = {}  
+        self.done_items = {}     
 
-        # Initialize the appearance mode to dark by default
         self.appearance_mode = "dark"
         ctk.set_appearance_mode(self.appearance_mode)
-        ctk.set_default_color_theme("dark-blue")  # Set default color theme
+        ctk.set_default_color_theme("dark-blue")  
 
-        # Set window properties
         self.root.geometry("800x600")
         self.root.title("Grocery To-Do List")
 
-        # Load the homepage
         self.show_homepage()
 
     def show_homepage(self):
-        show_homepage(self.root, self)  # Passing self for access to central storage and navigation
+        show_homepage(self.root, self)  
 
     def show_create_list(self):
         create_list_flow(self.root, self)
@@ -38,8 +36,11 @@ class AppController:
     def show_saved_recipes(self):
         view_saved_recipes(self.root, self)
 
+    def show_browse_recipes(self):
+        browse_recipes(self.root, self)
+
 def run_app():
-    root = ctk.CTk()  # Initialize the main window
+    root = ctk.CTk()  
     app_controller = AppController(root)
     root.mainloop()
 

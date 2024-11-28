@@ -1,0 +1,41 @@
+{
+    "Fruits": [
+        {"name": "Apple", "image": "applePNG.png"},
+        {"name": "Bananas", "image": "Banana.png"},
+        {"name": "Oranges", "image": "orange.png"},
+        {"name": "Strawberries", "image": "strawberry.png"},
+        {"name": "Watermelon", "image": "watermelon.png"},
+        {"name": "Star Fruit", "image": "starfruit.png"},
+        {"name": "Dragon Fruit", "image": "dragonfruit.png"},
+        {"name": "Honey Dew", "image": "honeydew.png"}
+    ],
+    "Vegetables": [
+        {"name": "Carrots", "image": "carrot.png"},
+        {"name": "Spinach", "image": "spinach.png"},
+        {"name": "Potatoes", "image": "potato.png"},
+        {"name": "Bok Choy", "image": "bokchoy.png"},
+        {"name": "Broccoli", "image": "broccoli.png"},
+        {"name": "Asparagus", "image": "asparagus.png"},
+        {"name": "Artichoke", "image": "artichoke.png"},
+        {"name": "Celery", "image": "celery.png"}
+    ],
+    "Dairy": [
+        {"name": "Milk", "image": "milk.png"},
+        {"name": "Cheese", "image": "cheese.png"},
+        {"name": "Butter", "image": "butter.png"},
+        {"name": "Sour Cream", "image": "sourcream.png"},
+        {"name": "Heavy Cream", "image": "heavycream.png"},
+        {"name": "Ice Cream", "image": "icecream.png"}
+    ],
+    "Meat": [
+        {"name": "Chicken Breast", "image": "chickenbreast.png"},
+        {"name": "Chicken Wings", "image": "chickenwings.png"},
+        {"name": "Chicken Thigh", "image": "chickenthigh.png"},
+        {"name": "Ribeye", "image": "ribeye.png"},
+        {"name": "Australian Wagyu", "image": "wagyu.png"},
+        {"name": "Ground Beef", "image": "groundbeef.png"},
+        {"name": "Ground Pork", "image": "groundpork.png"},
+        {"name": "Pork Butt", "image": "porkbutt.png"},
+        {"name": "Porkchops", "image": "porkchop.png"}
+    ]
+}
