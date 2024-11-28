@@ -11,15 +11,13 @@ import os
 class AppController:
     def __init__(self, root):
         self.root = root
-        self.grocery_lists = self.load_data("grocery_lists.json")  # Load grocery lists
-        self.saved_recipes = self.load_data("saved_recipes.json")  # Load saved recipes
+        self.grocery_lists = {}  # Central storage for all grocery lists
+        self.done_items = {}     # Storage for completed items
 
-        # Initialize the appearance mode to dark by default
         self.appearance_mode = "dark"
         ctk.set_appearance_mode(self.appearance_mode)
-        ctk.set_default_color_theme("dark-blue")  # Set default color theme
+        ctk.set_default_color_theme("dark-blue")  
 
-        # Set window properties
         self.root.geometry("800x600")
         self.root.title("Grocery To-Do List")
 
@@ -27,7 +25,6 @@ class AppController:
         self.save_data(self.grocery_lists, "grocery_lists.json")
         self.save_data(self.saved_recipes, "saved_recipes.json")
 
-        # Load the homepage
         self.show_homepage()
 
     def save_data(self, data, file_name):
@@ -54,7 +51,7 @@ class AppController:
 
 
     def show_homepage(self):
-        show_homepage(self.root, self)  # Passing self for access to central storage and navigation
+        show_homepage(self.root, self)  
 
     def show_create_list(self):
         create_list_flow(self.root, self)
@@ -73,7 +70,7 @@ class AppController:
 
 
 def run_app():
-    root = ctk.CTk()  # Initialize the main window
+    root = ctk.CTk()  
     app_controller = AppController(root)
     root.mainloop()
 
