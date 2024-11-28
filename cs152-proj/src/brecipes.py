@@ -2,20 +2,21 @@ import json
 import os
 import customtkinter as ctk
 from utilities import clear_window
-from recipe_data import saved_recipes
 
-# Load the recipe data from the JSON file
+selected_recipe = None
+
 def load_recipes():
+    """Load recipe categories from the static `recipes.json` file."""
     file_path = os.path.join(os.path.dirname(__file__), 'recipes.json')
     try:
         with open(file_path, "r") as file:
-            recipe_data = json.load(file)
-        return recipe_data
+            return json.load(file)
     except json.JSONDecodeError:
         print("Error decoding JSON file.")
         return {}
-
-selected_recipe = None
+    except FileNotFoundError:
+        print(f"File {file_path} not found.")
+        return {}
 
 def browse_recipes(root, controller):
     """Allows users to browse available recipes."""
@@ -40,117 +41,81 @@ def browse_recipes(root, controller):
     # Load recipe categories from the JSON file
     recipe_data = load_recipes()
 
-    def show_recipes(category):
-        global selected_recipe
+    # Frame for displaying recipes in the main area
+    recipes_frame = ctk.CTkFrame(main_container)
+    recipes_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
+    def show_recipes(category):
+        """Display recipes for the selected category."""
+        global selected_recipe
         for widget in recipes_frame.winfo_children():
             widget.destroy()
 
         header.configure(text=f"{category} Recipes")
 
-        # Display the recipe items in the `recipes_frame`
         if category in recipe_data:
-            recipe_categories = recipe_data[category]
-            for idx, item in enumerate(recipe_categories):
+            recipes = recipe_data[category]
+            for idx, item in enumerate(recipes):
                 row = idx // 3  # Calculate the current row
                 column = idx % 3  # Calculate the current column (0, 1, 2 for each row)
-                # Display item label in the calculated row and column
                 item_button = ctk.CTkButton(
-                    recipes_frame, 
-                    text=item, 
+                    recipes_frame,
+                    text=item,
                     font=("Helvetica", 14),
-                    command=lambda item=item: set_selected_recipe(item),  
+                    command=lambda recipe=item: set_selected_recipe(recipe),
                     fg_color="transparent",
                     border_width=0
                 )
-                item_button.grid(row=row, column=column, padx=60, pady=60)
+                item_button.grid(row=row, column=column, padx=40, pady=20)
 
-    # Buttons in the sidebar (pass the category names)
-    button1 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Soup", 
-        command=lambda: show_recipes("Soup"),
-        width=120,
-        height=40,
-        corner_radius=10   
-    )
-    button1.pack(pady=10, padx=10, anchor="w")
+    # Add category buttons to the sidebar
+    for category in recipe_data.keys():
+        ctk.CTkButton(
+            sidebar_frame,
+            text=category,
+            command=lambda cat=category: show_recipes(cat),
+            width=120,
+            height=40,
+            corner_radius=10
+        ).pack(pady=10, padx=10, anchor="w")
 
-    button2 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Baked", 
-        command=lambda: show_recipes("Baked"),
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    button2.pack(pady=10, padx=10, anchor="w")
-
-    button3 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Fried/Deep Fried", 
-        command=lambda: show_recipes("Fried/Deep Fried"),
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    button3.pack(pady=10, padx=10, anchor="w")
-
-    button4 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Vegetarian", 
-        command=lambda: show_recipes("Vegetarian"),
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    button4.pack(pady=10, padx=10, anchor="w")
-
+    # Save recipe button
     save_button = ctk.CTkButton(
-        sidebar_frame, 
-        text="Save Recipe", 
-        command=save_recipe,
+        sidebar_frame,
+        text="Save Recipe",
+        command=lambda: save_recipe(controller),
         width=120,
         height=40,
         corner_radius=10
     )
     save_button.pack(pady=20, padx=10, anchor="w")
 
-    # Main frame on the right for the recipe list and search bar
-    main_frame = ctk.CTkFrame(main_container, width=600, height=600, corner_radius=10)
-    main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")  # Expands to fill available space
-    
-    # Search bar at the top of the main frame
-    search_entry = ctk.CTkEntry(main_frame, placeholder_text="Search for recipes...", width=520)
-    search_entry.pack(pady=10)
-
-    # Frame to display grocery items in the main frame
-    recipes_frame = ctk.CTkFrame(main_frame)
-    recipes_frame.pack(fill="both", expand=True, padx=20, pady=20)
-
     # Back to homepage button
     back_button = ctk.CTkButton(
-        sidebar_frame, 
-        text="Back to Homepage", 
+        sidebar_frame,
+        text="Back to Homepage",
         command=controller.show_homepage,
-        width=120, 
-        height=40, 
-        corner_radius=10,
-        font=("Helvetica", 10)
+        width=120,
+        height=40,
+        corner_radius=10
     )
-    back_button.pack(padx=10, pady=60)
+    back_button.pack(pady=40, padx=10, anchor="w")
 
-# Function to select the recipe from the grid
-def set_selected_recipe(item): 
+# Function to select a recipe
+def set_selected_recipe(recipe):
     global selected_recipe
-    selected_recipe = item
-    print(f"selected {selected_recipe}") # debug
+    selected_recipe = recipe
+    print(f"Selected recipe: {selected_recipe}")
 
-# Function to save selected recipe to array (see recipe_data.py)
-def save_recipe():
+# Function to save the selected recipe
+def save_recipe(controller):
     global selected_recipe
     if selected_recipe:
-        saved_recipes.append(selected_recipe)
-        print(f"saved: {selected_recipe}") # debug
+        if selected_recipe not in controller.saved_recipes:
+            controller.saved_recipes.append(selected_recipe)
+            controller.save_data(controller.saved_recipes, "saved_recipes.json")
+            print(f"Saved recipe: {selected_recipe}")
+        else:
+            print("Recipe is already saved.")
     else:
-        print("no recipe selected") # debug
+        print("No recipe selected.")
