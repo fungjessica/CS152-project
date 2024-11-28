@@ -5,7 +5,6 @@ from utilities import clear_window
 from recipe_data import saved_recipes
 from PIL import Image
 
-# Load the recipe data from the JSON file
 def load_recipes():
     file_path = os.path.join(os.path.dirname(__file__), 'recipes.json')
     try:
@@ -19,54 +18,43 @@ def load_recipes():
 selected_recipe = None
 
 def browse_recipes(root, controller):
-    """Allows users to browse available recipes."""
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="Browse Recipes", font=("Helvetica", 24, "bold"))
     header.pack(pady=20)
 
-    # Main container frame for the layout
     main_container = ctk.CTkFrame(root)
     main_container.pack(pady=10, padx=10, fill="both", expand=True)
 
-    # Sidebar frame on the left for navigation buttons
     sidebar_frame = ctk.CTkFrame(main_container, width=125, height=600, corner_radius=10)
     sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="ns")
 
-    # Prevent sidebar from resizing
     sidebar_frame.grid_propagate(False)
     sidebar_frame.pack_propagate(False)
 
-    # Configure the grid to keep sidebar fixed
-    main_container.grid_columnconfigure(0, weight=0, minsize=100)  # Fixed width for sidebar
-    main_container.grid_columnconfigure(1, weight=1)  # Main content adjusts to resizing
-    main_container.grid_rowconfigure(0, weight=1)  # Allow vertical resizing only for content
+    main_container.grid_columnconfigure(0, weight=0, minsize=100) 
+    main_container.grid_columnconfigure(1, weight=1)  
+    main_container.grid_rowconfigure(0, weight=1)  
 
-
-    # Load recipe categories from the JSON file
     recipe_data = load_recipes()
 
-    # Function to show recipes based on category or search query
     def show_recipes(category=None, search_query=""):
         global selected_recipe
 
-        # Clear previous recipe buttons
         for widget in recipes_frame.winfo_children():
             widget.destroy()
 
         header.configure(text="Recipes")
 
-        # Filter recipes based on category and search query
         if category:
             recipes_to_display = recipe_data.get(category, [])
         else:
             recipes_to_display = []
             for category, recipes in recipe_data.items():
                 for recipe in recipes:
-                    if search_query.lower() in recipe.lower():  # Case insensitive search
+                    if search_query.lower() in recipe.lower():
                         recipes_to_display.append(recipe)
 
-        # Display the filtered recipes
         for idx, item in enumerate(recipes_to_display):
             row = idx // 4
             column = idx % 4
@@ -86,7 +74,6 @@ def browse_recipes(root, controller):
             )
             item_button.grid(row=row, column=column, padx=60, pady=60)
 
-    # Buttons in the sidebar (pass the category names)
     button1 = ctk.CTkButton(
         sidebar_frame, 
         text="Soup", 
@@ -137,26 +124,21 @@ def browse_recipes(root, controller):
     )
     save_button.pack(pady=20, padx=10, anchor="w")
 
-    # Main frame on the right for the recipe list and search bar
     main_frame = ctk.CTkFrame(main_container, width=600, height=600, corner_radius=10)
     main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")  # Expands to fill available space
     
-    # Search bar at the top of the main frame
     search_entry = ctk.CTkEntry(main_frame, placeholder_text="Search for recipes...", width=520)
     search_entry.pack(pady=10)
 
-    # Function to update the recipe display based on search query
     def on_search_change(event=None):
         search_query = search_entry.get()
         show_recipes(search_query=search_query)
 
     search_entry.bind("<KeyRelease>", on_search_change)
 
-    # Frame to display recipe items in the main frame
     recipes_frame = ctk.CTkFrame(main_frame)
     recipes_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-    # Back to homepage button
     back_button = ctk.CTkButton(
         sidebar_frame, 
         text="Back to Homepage", 
@@ -168,17 +150,16 @@ def browse_recipes(root, controller):
     )
     back_button.pack(padx=10, pady=60)
 
-# Function to select the recipe from the grid
 def set_selected_recipe(item): 
     global selected_recipe
     selected_recipe = item
-    print(f"selected {selected_recipe}") # debug
+    print(f"selected {selected_recipe}") 
 
-# Function to save selected recipe to array (see recipe_data.py)
 def save_recipe():
     global selected_recipe
     if selected_recipe:
-        saved_recipes.append(selected_recipe)
-        print(f"saved: {selected_recipe}") # debug
+        recipe_name = selected_recipe["name"] if isinstance(selected_recipe, dict) else selected_recipe
+        saved_recipes.append(recipe_name)
+        print(f"saved: {recipe_name}") 
     else:
-        print("no recipe selected") # debug
+        print("no recipe selected") 
