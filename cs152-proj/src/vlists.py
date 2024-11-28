@@ -156,53 +156,6 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
 
     check_selection()
 
-<<<<<<< HEAD
-#TODO (NOT WORKING)
-def mark_items_done(root, controller, list_name, item_vars):
-    """Move the selected items to the Done section."""
-    selected_items = [item for item, var in item_vars.items() if var.get()]
-    
-    # Check if there is a "done" section for this list in the controller
-    if "done_items" not in controller.grocery_lists[list_name]:
-        controller.grocery_lists[list_name]["done_items"] = []
-
-    # Move selected items to "done" section
-    for item in selected_items:
-        controller.grocery_lists[list_name]["done_items"].append(item)
-        del controller.grocery_lists[list_name][item]
-
-    # Refresh the list details after marking items as done
-    view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
-
-def delete_items_from_list(root, controller, list_name, item_vars):
-    """Delete the selected items from the list."""
-    selected_items = [item for item, var in item_vars.items() if var.get()]
-    
-    # Delete the selected items from the grocery list
-    for item in selected_items:
-        del controller.grocery_lists[list_name][item]
-
-    # Refresh the list details after deleting items
-    view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
-
-def display_done_items(done_frame, controller, list_name):
-    """Displays the items marked as done in a separate section."""
-    if "done_items" in controller.grocery_lists[list_name]:
-        done_items = controller.grocery_lists[list_name]["done_items"]
-        
-        if done_items:
-            header = ctk.CTkLabel(done_frame, text="Done Items", font=("Helvetica", 20, "bold"))
-            header.pack(pady=10)
-
-            for item in done_items:
-                item_label = ctk.CTkLabel(done_frame, text=item, font=("Helvetica", 14))
-                item_label.pack(pady=5, padx=10)
-            
-            # Show the done items frame after items are moved to done
-            done_frame.pack(fill="x", pady=20)
-    else:
-        done_frame.pack_forget()  # Hide if no done items
-=======
 def mark_items_done(root, controller, list_name, item_vars):
     """Move the selected items to the Done section."""
     selected_items = [var.get() for var in item_vars.values() if var.get()]
@@ -253,7 +206,6 @@ def delete_items_from_list(root, controller, list_name, item_vars):
 #        for item, quantity in done_items.items():
 #            item_label = ctk.CTkLabel(done_frame, text=f"{item} - {quantity}", font=("Helvetica", 14))
 #            item_label.pack(pady=5, padx=10)
->>>>>>> b1e78aa5e8521bee1c2494eca600ea1f5ef9ff88
 
 def rename_list(root, controller, idx):
     list_name = list(controller.grocery_lists.keys())[idx]

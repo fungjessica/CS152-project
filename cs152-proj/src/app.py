@@ -5,14 +5,12 @@ from vlists import view_lists
 from bgroceries import browse_groceries
 from srecipes import view_saved_recipes
 from brecipes import browse_recipes
-import json
-import os
 
 class AppController:
     def __init__(self, root):
         self.root = root
-        self.grocery_lists = {}  # Central storage for all grocery lists
-        self.done_items = {}     # Storage for completed items
+        self.grocery_lists = {}  
+        self.done_items = {}     
 
         self.appearance_mode = "dark"
         ctk.set_appearance_mode(self.appearance_mode)
@@ -21,34 +19,7 @@ class AppController:
         self.root.geometry("800x600")
         self.root.title("Grocery To-Do List")
 
-        # Save data on initialization
-        self.save_data(self.grocery_lists, "grocery_lists.json")
-        self.save_data(self.saved_recipes, "saved_recipes.json")
-
         self.show_homepage()
-
-    def save_data(self, data, file_name):
-        """Save data to a JSON file."""
-        try:
-            file_path = os.path.join(os.path.dirname(__file__), file_name)
-            with open(file_path, 'w') as file:
-                json.dump(data, file, indent=4)
-        except Exception as e:
-            print(f"Error saving data to {file_name}: {e}")
-
-    def load_data(self, file_name):
-        """Load data from a JSON file."""
-        file_path = os.path.join(os.path.dirname(__file__), file_name)
-        if os.path.exists(file_path):
-            try:
-                with open(file_path, 'r') as file:
-                    return json.load(file)
-            except json.JSONDecodeError:
-                print(f"Error decoding JSON from {file_name}. Returning empty data.")
-            except Exception as e:
-                print(f"Error loading data from {file_name}: {e}")
-        return {}
-
 
     def show_homepage(self):
         show_homepage(self.root, self)  
@@ -68,12 +39,10 @@ class AppController:
     def show_browse_recipes(self):
         browse_recipes(self.root, self)
 
-
 def run_app():
     root = ctk.CTk()  
     app_controller = AppController(root)
     root.mainloop()
-
 
 if __name__ == "__main__":
     run_app()

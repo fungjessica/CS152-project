@@ -1,10 +1,5 @@
 import customtkinter as ctk
 from utilities import clear_window
-<<<<<<< HEAD
-from bgroceries import browse_groceries
-from recipe_data import saved_groceries
-=======
->>>>>>> b1e78aa5e8521bee1c2494eca600ea1f5ef9ff88
 
 def create_list_flow(root, controller):
     """Flow to enter the grocery list name."""
