@@ -6,7 +6,6 @@ from recipe_data import saved_groceries
 from PIL import Image
 
 def load_groceries():
-    # Build the path to groceries.json
     file_path = os.path.join(os.path.dirname(__file__), 'groceries.json')
 
     try:
@@ -26,21 +25,18 @@ def browse_groceries(root, controller):
     header = ctk.CTkLabel(root, text="Browse Groceries", font=("Helvetica", 24, "bold"))
     header.pack(pady=20)
 
-    # Main container frame for the layout
     main_container = ctk.CTkFrame(root)
     main_container.pack(pady=10, padx=10, fill="both", expand=True)
 
     sidebar_frame = ctk.CTkFrame(main_container, width=125, height=600, corner_radius=10)
     sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="ns")
 
-    # Prevent sidebar from resizing
     sidebar_frame.grid_propagate(False)
     sidebar_frame.pack_propagate(False)
 
-    # Configure the grid to keep sidebar fixed
-    main_container.grid_columnconfigure(0, weight=0, minsize=100)  # Fixed width for sidebar
-    main_container.grid_columnconfigure(1, weight=1)  # Main content adjusts to resizing
-    main_container.grid_rowconfigure(0, weight=1)  # Allow vertical resizing only for content
+    main_container.grid_columnconfigure(0, weight=0, minsize=100)  
+    main_container.grid_columnconfigure(1, weight=1)  
+    main_container.grid_rowconfigure(0, weight=1) 
 
     groceries_data = load_groceries()
 
@@ -65,25 +61,21 @@ def browse_groceries(root, controller):
                 row = idx // 4
                 column = idx % 4
 
-                # Load the image for the item
                 image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
-                item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  # Adjust size as needed
+                item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  
 
-                # Create a button with image and text
                 item_button = ctk.CTkButton(
                     groceries_frame,
                     image=item_image,
                     text=item["name"], 
                     font=("Helvetica", 14), 
-                    #image=item_image,
-                    compound="top",  # Image on top of text
+                    compound="top",  
                     command=lambda item=item: set_selected_groceries(item),
                     fg_color="transparent",
                     border_width=0
                 )
                 item_button.grid(row=row, column=column, padx=30, pady=30)
 
-    # Sidebar Buttons
     button1 = ctk.CTkButton(
         sidebar_frame, 
         text="Fruits", 
@@ -171,4 +163,4 @@ def save_groceries():
         saved_groceries.append(selected_groceries)
         print(f"saved: {selected_groceries}")
     else:
-        print("no groceries selected") #debug
+        print("no groceries selected") 
