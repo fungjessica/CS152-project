@@ -2,7 +2,7 @@ import customtkinter as ctk
 from utilities import clear_window
 from clist import save_grocery_lists_to_file
 
-def view_lists(root, controller):
+def view_lists(root, controller)
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="View Grocery Lists", font=("Helvetica", 24, "bold"))
