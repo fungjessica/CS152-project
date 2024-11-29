@@ -1,13 +1,17 @@
-# Project Title
-
-Simple overview of use/purpose.
+# Grocery To-Do List
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+This is a simple app to help users create and manage grocery lists and save recipes. It has a clean and easy-to-use interface built with Python and customtkinter.
 
-## Getting Started
+## Features
+Create, edit, and delete grocery lists.
+Browse groceries by category and select items.
+Save favorite recipes and view them later.
+Search groceries and recipes quickly.
+Automatically saves data using JSON files.
 
+##Getting Started
 ### Dependencies
 
 * Describe any prerequisites, libraries, OS version, etc., needed before installing program.
