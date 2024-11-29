@@ -1,4 +1,4 @@
-#import customtkinter as ctk
+import customtkinter as ctk
 from utilities import clear_window, toggle_mode, quit_app
 
 def show_homepage(root, controller):
