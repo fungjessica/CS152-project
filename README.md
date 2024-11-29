@@ -72,7 +72,7 @@ If you run into issues:
    ```
 * Check your Python version:
    ```
-   Python --version
+   python --version
    ```
 
 ## Authors
