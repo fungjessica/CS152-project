@@ -15,7 +15,7 @@ def show_homepage(root, controller):
         text="View Lists",
         command=controller.show_view_lists,
         width=250,
-        height=50,
+        height=60,
         corner_radius=10,
         font=("Helvetica", 16)
     )
@@ -27,11 +27,22 @@ def show_homepage(root, controller):
         text="Create a New List",
         command=controller.show_create_list,
         width=250,
-        height=50,
+        height=60,
         corner_radius=10,
         font=("Helvetica", 16)
     )
     create_list_button.pack(pady=20)
+
+    browse_recipes_button = ctk.CTkButton(
+        root, 
+        text="Browse Recipes", 
+        command=controller.show_browse_recipes,
+        width=250,
+        height=60,
+        corner_radius=10,
+        font=("Helvetica", 16)
+    )
+    browse_recipes_button.pack(pady=20)
 
     # Button to view saved recipes
     saved_recipes_button = ctk.CTkButton(
@@ -39,34 +50,23 @@ def show_homepage(root, controller):
         text="Saved Recipes",
         command=controller.show_saved_recipes,
         width=250,
-        height=50,
+        height=60,
         corner_radius=10,
         font=("Helvetica", 16)
     )
     saved_recipes_button.pack(pady=20)
 
     # Button to browse grocery items
-    browse_button = ctk.CTkButton(
-        root,
-        text="Browse Groceries",
-        command=controller.show_browse_groceries,
-        width=250,
-        height=50,
-        corner_radius=10,
-        font=("Helvetica", 16)
-    )
-    browse_button.pack(pady=20)
-
-    browse_recipes_button = ctk.CTkButton(
-        root, 
-        text="Browse Recipes", 
-        command=controller.show_browse_recipes,
-        width=250,
-        height=50,
-        corner_radius=10,
-        font=("Helvetica", 16)
-    )
-    browse_recipes_button.pack(pady=20)
+    # browse_button = ctk.CTkButton(
+    #     root,
+    #     text="Browse Groceries",
+    #     command=controller.show_browse_groceries,
+    #     width=250,
+    #     height=50,
+    #     corner_radius=10,
+    #     font=("Helvetica", 16)
+    # )
+    # browse_button.pack(pady=20)
     
     # Mode Toggle Button (Bottom Left)
     controller.mode_toggle_button = ctk.CTkButton(

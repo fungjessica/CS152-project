@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from utilities import clear_window
+from clist import save_grocery_lists_to_file
 
 def view_lists(root, controller):
     clear_window(root)
@@ -79,23 +80,25 @@ def view_list_details(root, controller, idx):
     header = ctk.CTkLabel(root, text=f"List: {list_name}", font=("Helvetica", 24, "bold"))
     header.pack(pady=20)
 
-    items_frame = ctk.CTkFrame(root)
-    items_frame.pack(fill="x", pady=10)
+    # Create a scrollable frame for items
+    scrollable_frame = ctk.CTkScrollableFrame(root, width=600, height=300, corner_radius=10)
+    scrollable_frame.pack(fill="both", pady=10, padx=20, expand=True)
 
-    items_frame.grid_columnconfigure(0, weight=1)
+    scrollable_frame.grid_columnconfigure(0, weight=1)
 
-    ctk.CTkLabel(items_frame, text="Item", font=("Helvetica", 16)).grid(row=0, column=0, padx=10, pady=5, sticky="w")
-    ctk.CTkLabel(items_frame, text="Quantity", font=("Helvetica", 16)).grid(row=0, column=1, padx=10, pady=5, sticky="e")
-    
+    # Add column titles
+    ctk.CTkLabel(scrollable_frame, text="Items", font=("Helvetica", 16, "bold")).grid(row=0, column=0, padx=10, pady=5, sticky="w")
+    ctk.CTkLabel(scrollable_frame, text="Quantity", font=("Helvetica", 16, "bold")).grid(row=0, column=1, padx=10, pady=5, sticky="e")
+
     item_vars = {}
 
     # Display active (non-done) items
-    for row, (item, quantity) in enumerate(active_items.items(), start=1):
-        ctk.CTkLabel(items_frame, text=item, font=("Helvetica", 14)).grid(row=row, column=0, padx=10, pady=5, sticky="w")
-        ctk.CTkLabel(items_frame, text=str(quantity), font=("Helvetica", 14)).grid(row=row, column=1, padx=10, pady=5, sticky="e")
+    for row, (item, data) in enumerate(active_items.items(), start=1):
+        ctk.CTkLabel(scrollable_frame, text=item, font=("Helvetica", 14)).grid(row=row, column=0, padx=10, pady=5, sticky="w")
+        ctk.CTkLabel(scrollable_frame, text=str(data['quantity']), font=("Helvetica", 14)).grid(row=row, column=1, padx=40, pady=5, sticky="e")
 
         select_var = ctk.StringVar()
-        checkbox = ctk.CTkCheckBox(items_frame, variable=select_var, text="", onvalue=item, offvalue="")
+        checkbox = ctk.CTkCheckBox(scrollable_frame, variable=select_var, text="", onvalue=item, offvalue="")
         checkbox.grid(row=row, column=2, padx=10, pady=5, sticky="e")
         item_vars[item + "_select"] = select_var
 
@@ -108,12 +111,13 @@ def view_list_details(root, controller, idx):
     # Call the function to display done items (now separated)
     #display_done_items(done_frame, controller, list_name)
 
+    # Back button
     back_button = ctk.CTkButton(
-        root, 
-        text="Back to Lists", 
+        root,
+        text="Back to Lists",
         command=lambda: view_lists(root, controller),
-        width=150, 
-        height=40, 
+        width=150,
+        height=40,
         corner_radius=10,
         font=("Helvetica", 14)
     )
@@ -188,6 +192,7 @@ def delete_items_from_list(root, controller, list_name, item_vars):
         if item in controller.grocery_lists[list_name]:
             del controller.grocery_lists[list_name][item]
 
+    save_grocery_lists_to_file(controller.grocery_lists)
     # Refresh the list details
     view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
 
@@ -235,6 +240,7 @@ def rename_list(root, controller, idx):
         if new_name:  
             items = controller.grocery_lists.pop(list_name)
             controller.grocery_lists[new_name] = items
+            save_grocery_lists_to_file(controller.grocery_lists)
             view_lists(root, controller) 
             dialog_window.destroy()  
         else:
@@ -255,5 +261,5 @@ def rename_list(root, controller, idx):
 def delete_list(root, controller, idx):
     list_name = list(controller.grocery_lists.keys())[idx]
     del controller.grocery_lists[list_name]
-
+    save_grocery_lists_to_file(controller.grocery_lists)
     view_lists(root, controller)

@@ -1,9 +1,29 @@
 import customtkinter as ctk
 from utilities import clear_window
-from recipe_data import saved_recipes
+import os
+import json
+
+SAVED_RECIPES_FILE = os.path.join(os.path.dirname(__file__), "saved_recipes.json")
+
+def load_saved_recipes():
+    if os.path.exists(SAVED_RECIPES_FILE):
+        try:
+            with open(SAVED_RECIPES_FILE, "r") as file:
+                return json.load(file)
+        except json.JSONDecodeError:
+            print("Error reading saved recipes file.")
+            return []
+    return []
+
+def save_recipes_to_file(recipes):
+    with open(SAVED_RECIPES_FILE, "w") as file:
+        json.dump(recipes, file, indent=4)
+
+saved_recipes = load_saved_recipes()
 
 def view_saved_recipes(root, controller):
     clear_window(root)
+    saved_recipes = load_saved_recipes()
 
     header = ctk.CTkLabel(root, text="Saved Recipes", font=("Helvetica", 24, "bold"))
     header.pack(pady=30)
@@ -51,6 +71,7 @@ def view_saved_recipes(root, controller):
         new_recipe = recipe_entry.get().strip()
         if new_recipe:
             saved_recipes.append(new_recipe)
+            save_recipes_to_file(saved_recipes)
             recipe_entry.delete(0, "end")
             refresh_page()
         else:
@@ -70,6 +91,7 @@ def view_saved_recipes(root, controller):
     def delete_recipe(recipe):
         if recipe in saved_recipes:
             saved_recipes.remove(recipe)
+            save_recipes_to_file(saved_recipes)
         refresh_page()
 
     refresh_page()

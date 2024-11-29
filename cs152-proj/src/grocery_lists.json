@@ -1,0 +1,31 @@
+{
+    "123123": {
+        "Carrots": {
+            "quantity": 2
+        },
+        "Bok Choy": {
+            "quantity": 2
+        },
+        "Potatoes": {
+            "quantity": 2
+        },
+        "Spinach": {
+            "quantity": 1
+        },
+        "Dragon Fruit": {
+            "quantity": 3
+        },
+        "Star Fruit": {
+            "quantity": 1
+        },
+        "Watermelon": {
+            "quantity": 1
+        },
+        "Apple": {
+            "quantity": 1
+        },
+        "Oranges": {
+            "quantity": 1
+        }
+    }
+}

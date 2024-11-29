@@ -1,5 +1,12 @@
+import os
+import json
 import customtkinter as ctk
 from utilities import clear_window
+from bgroceries import load_groceries
+from PIL import Image
+import tkinter as tk
+
+GROCERY_LISTS_FILE = os.path.join(os.path.dirname(__file__), "grocery_lists.json")
 
 def create_list_flow(root, controller):
     """Flow to enter the grocery list name."""
@@ -49,91 +56,212 @@ def validate_list_name(root, controller, list_name_entry, warning_label):
 def choose_items_flow(root, controller, list_name):
     clear_window(root)
 
-    header = ctk.CTkLabel(root, text=f"Select Items for '{list_name}'", font=("Helvetica", 24, "bold"))
-    header.pack(pady=30)
+    header = ctk.CTkLabel(root, text=f"Browse Groceries for '{list_name}'", font=("Helvetica", 24, "bold"))
+    header.pack(pady=20)
 
-    available_items = ["Milk", "Eggs", "Bread", "Butter", "Cheese", "Apples", "Bananas", "Chicken"]
-    selected_items = {}
+    main_container = ctk.CTkFrame(root)
+    main_container.pack(pady=10, padx=10, fill="both", expand=True)
 
-    for item in available_items:
-        frame = ctk.CTkFrame(root)
-        frame.pack(padx=20, pady=5, fill="x")
+    # Configure grid layout for the main container
+    main_container.grid_columnconfigure(0, weight=0, minsize=150)  # Sidebar
+    main_container.grid_columnconfigure(1, weight=1)  # Main content
+    main_container.grid_rowconfigure(1, weight=1)  # Scrollable frame
 
-        frame.grid_columnconfigure(0, weight=1)
+    # Sidebar for categories
+    sidebar_frame = ctk.CTkFrame(main_container, width=125, corner_radius=10)
+    sidebar_frame.grid(row=0, column=0, rowspan=2, padx=20, pady=20, sticky="ns")
 
-        item_label = ctk.CTkLabel(frame, text=item, font=("Helvetica", 14))
-        item_label.grid(row=0, column=0, padx=10, sticky="w")
+    groceries_data = load_groceries()
+    selected_items = []
 
-        select_var = ctk.StringVar()
-        checkbox = ctk.CTkCheckBox(frame, variable=select_var, text="", onvalue=item, offvalue="")
-        checkbox.grid(row=0, column=1, padx=20, sticky="e")
-        selected_items[item] = {"selected": select_var, "quantity": None}
+    # Search bar
+    search_entry = ctk.CTkEntry(main_container, placeholder_text="Search for groceries...", width=520)
+    search_entry.grid(row=0, column=1, padx=20, pady=(10, 0), sticky="ew")
 
+    # Scrollable frame for grocery items
+    scrollable_frame = ctk.CTkScrollableFrame(main_container, width=600, corner_radius=10)
+    scrollable_frame.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
+
+    # Function to filter groceries by search query or category
+    def show_groceries(category=None, search_query=""):
+        for widget in scrollable_frame.winfo_children():
+            widget.destroy()
+
+        if category:
+            groceries_to_display = groceries_data.get(category, [])
+        else:
+            groceries_to_display = []
+            for items in groceries_data.values():
+                groceries_to_display.extend(items)
+
+        if search_query:
+            search_query = search_query.lower()
+            groceries_to_display = [
+                item for item in groceries_to_display if search_query in item["name"].lower()
+            ]
+
+        for idx, item in enumerate(groceries_to_display):
+            image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
+            item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))
+
+            fg_color = "#3b82f6" if item["name"] in selected_items else "transparent"
+
+            def create_button_callback(item_name, button):
+                return lambda: toggle_selection(item_name, button)
+
+            item_button = ctk.CTkButton(
+                scrollable_frame,
+                text=item["name"],
+                image=item_image,
+                compound="top",
+                font=("Helvetica", 14),
+                fg_color=fg_color,
+                hover_color="#e0e0e0",
+            )
+            item_button.configure(command=create_button_callback(item["name"], item_button))
+            item_button.grid(row=idx // 3, column=idx % 3, padx=30, pady=20)
+
+    # Function to toggle item selection
+    def toggle_selection(item_name, button):
+        if item_name in selected_items:
+            selected_items.remove(item_name)
+            button.configure(fg_color="transparent")  # Deselect
+        else:
+            selected_items.append(item_name)
+            button.configure(fg_color="#3b82f6")  # Highlight as selected
+        update_proceed_button_state()
+
+    # Update the state of the proceed button
+    def update_proceed_button_state():
+        if selected_items:
+            proceed_button.configure(state="normal", fg_color="#3b82f6")
+        else:
+            proceed_button.configure(state="disabled", fg_color="#a0a0a0")
+
+    # Enable real-time search functionality
+    def on_search_change(event=None):
+        search_query = search_entry.get()
+        show_groceries(search_query=search_query)
+
+    search_entry.bind("<KeyRelease>", on_search_change)
+
+    # All button to show all ingredients
+    all_button = ctk.CTkButton(
+        sidebar_frame,
+        text="All",
+        command=lambda: show_groceries(),
+        width=120,
+        height=40,
+        corner_radius=10
+    )
+    all_button.pack(pady=(10, 10), padx=10, anchor="w")
+
+    # Sidebar buttons for categories
+    for category in groceries_data.keys():
+        category_button = ctk.CTkButton(
+            sidebar_frame,
+            text=category,
+            command=lambda cat=category: show_groceries(cat),
+            width=120,
+            height=40,
+            corner_radius=10
+        )
+        category_button.pack(pady=10, padx=10, anchor="w")
+
+    # Add Next and Back buttons
     proceed_button = ctk.CTkButton(
-        root,
-        text="Next: Set Quantities",
-        command=lambda: set_quantities_flow(root, controller, list_name, selected_items),
-        width=200,
+        sidebar_frame,
+        text="Next",
+        command=lambda: proceed_to_quantities(),
+        width=120,
         height=40,
         corner_radius=10,
         font=("Helvetica", 14),
-        state="disabled"  
+        state="disabled",  # Initially disabled
+        fg_color="#EBEBE4",  # Greyed out
+        text_color="#ffffff",  # Text color
     )
-    proceed_button.pack(pady=20)
+    proceed_button.pack(pady=(60, 10))
 
     back_button = ctk.CTkButton(
-        root, 
-        text="Back to Name Entry", 
-        command=lambda: create_list_flow(root, controller),  
-        width=150, 
-        height=40, 
+        sidebar_frame,
+        text="Back",
+        command=lambda: create_list_flow(root, controller),
+        width=120,
+        height=40,
         corner_radius=10,
         font=("Helvetica", 14)
     )
     back_button.pack(pady=10)
 
-    def check_selection():
-        if any(var["selected"].get() for var in selected_items.values()):
-            proceed_button.configure(state="normal")  
-        else:
-            proceed_button.configure(state="disabled")  
+    # Function to proceed to quantity selection
+    def proceed_to_quantities():
+        if selected_items:
+            selected_items_dict = {item: {"selected": True, "quantity": None} for item in selected_items}
+            set_quantities_flow(root, controller, list_name, selected_items_dict)
 
-    for var in selected_items.values():
-        var["selected"].trace_add("write", lambda *args: check_selection())
-
-    check_selection()
+    # Show all groceries by default
+    show_groceries()
 
 def set_quantities_flow(root, controller, list_name, selected_items):
     clear_window(root)
 
+    # Header
     header = ctk.CTkLabel(root, text=f"Set Quantities for '{list_name}'", font=("Helvetica", 24, "bold"))
-    header.pack(pady=30)
+    header.pack(pady=20)
 
-    for item, data in selected_items.items():
-        if data["selected"].get(): 
-            frame = ctk.CTkFrame(root)
-            frame.pack(padx=20, pady=5, fill="x")
+    # Scrollable frame
+    scrollable_frame = ctk.CTkScrollableFrame(root, width=600, height=300, corner_radius=10)
+    scrollable_frame.pack(pady=10, padx=20, fill="both", expand=True)
 
-            frame.grid_columnconfigure(0, weight=1)
+    title_frame = ctk.CTkFrame(scrollable_frame)
+    title_frame.pack(fill="x", pady=(0, 10))
 
-            item_label = ctk.CTkLabel(frame, text=item, font=("Helvetica", 14))
+    title_frame.grid_columnconfigure(0, weight=1)  # Item title column
+    title_frame.grid_columnconfigure(1, weight=0)  # Quantity title column
+
+    item_title = ctk.CTkLabel(title_frame, text="Items", font=("Helvetica", 16, "bold"))
+    item_title.grid(row=0, column=0, padx=20, sticky="w")
+
+    quantity_title = ctk.CTkLabel(title_frame, text="Quantity", font=("Helvetica", 16, "bold"))
+    quantity_title.grid(row=0, column=1, padx=55, sticky="e")
+
+    # Add items to the scrollable frame
+    for idx, (item, data) in enumerate(selected_items.items()):
+        if data["selected"]:  # Only include selected items
+            item_frame = ctk.CTkFrame(scrollable_frame)
+            item_frame.pack(padx=5, pady=5, fill="x")
+
+            item_frame.grid_columnconfigure(0, weight=1)  # Item name column
+            item_frame.grid_columnconfigure(1, weight=0)  # Quantity column
+
+            # Item name
+            item_label = ctk.CTkLabel(item_frame, text=item, font=("Helvetica", 14))
             item_label.grid(row=0, column=0, padx=10, sticky="w")
 
-            quantity_frame = ctk.CTkFrame(frame)
+            # Quantity controls
+            quantity_frame = ctk.CTkFrame(item_frame)
             quantity_frame.grid(row=0, column=1, padx=20, sticky="e")
 
-            minus_button = ctk.CTkButton(quantity_frame, text="-", width=30, command=lambda i=item: decrease_quantity(i, selected_items))
+            minus_button = ctk.CTkButton(
+                quantity_frame, text="-", width=30,
+                command=lambda i=item: decrease_quantity(i, selected_items)
+            )
             minus_button.pack(side="left")
 
-            quantity_entry = ctk.CTkEntry(quantity_frame, width=50)
-            quantity_entry.insert(0, "1")
+            quantity_var = tk.IntVar(value=1 if data.get("quantity", 1) is None else data["quantity"])
+            data["quantity"] = quantity_var
+
+            quantity_entry = ctk.CTkEntry(quantity_frame, textvariable=quantity_var, width=50, justify="center")
             quantity_entry.pack(side="left", padx=5)
 
-            plus_button = ctk.CTkButton(quantity_frame, text="+", width=30, command=lambda i=item: increase_quantity(i, selected_items))
+            plus_button = ctk.CTkButton(
+                quantity_frame, text="+", width=30,
+                command=lambda i=item: increase_quantity(i, selected_items)
+            )
             plus_button.pack(side="left")
 
-            selected_items[item]["quantity"] = quantity_entry
-
+    # Create list button
     create_button = ctk.CTkButton(
         root, 
         text="Create List", 
@@ -145,6 +273,7 @@ def set_quantities_flow(root, controller, list_name, selected_items):
     )
     create_button.pack(pady=20)
 
+    # Back button
     back_button = ctk.CTkButton(
         root, 
         text="Back to Item Selection", 
@@ -156,26 +285,81 @@ def set_quantities_flow(root, controller, list_name, selected_items):
     )
     back_button.pack(pady=10)
 
-def increase_quantity(item, selected_items):
-    current_qty = int(selected_items[item]["quantity"].get())
-    selected_items[item]["quantity"].delete(0, "end")
-    selected_items[item]["quantity"].insert(0, str(current_qty + 1))
+def increase_quantity(item_name, selected_items):
+    current_qty = selected_items[item_name]["quantity"].get()
+    selected_items[item_name]["quantity"].set(current_qty + 1)
 
-def decrease_quantity(item, selected_items):
-    current_qty = int(selected_items[item]["quantity"].get())
-    if current_qty > 1:
-        selected_items[item]["quantity"].delete(0, "end")
-        selected_items[item]["quantity"].insert(0, str(current_qty - 1))
+def decrease_quantity(item_name, selected_items):
+    current_qty = selected_items[item_name]["quantity"].get()
+    if current_qty > 1:  # Ensure the quantity doesn't go below 1
+        selected_items[item_name]["quantity"].set(current_qty - 1)
 
 def create_list(root, controller, list_name, selected_items):
     try:
-        controller.grocery_lists[list_name] = {
-            item: int(data["quantity"].get())
-            for item, data in selected_items.items()
-            if data["quantity"] is not None and data["quantity"].get().isdigit()
-        }
+        # Validate quantities
+        for item, data in selected_items.items():
+            if data["selected"] and (data["quantity"] is None or data["quantity"] <= 0):
+                raise ValueError("Invalid quantity")
 
-        controller.show_view_lists()  
-    except AttributeError:
-        error_label = ctk.CTkLabel(root, text="Error: Please ensure all selected items have a valid quantity.", font=("Helvetica", 12), fg="red")
-        error_label.pack(pady=5)
+        # Save the list
+        grocery_list = {
+            item: {"quantity": data["quantity"]} for item, data in selected_items.items() if data["selected"]
+        }
+        controller.grocery_lists[list_name] = grocery_list
+        save_grocery_lists_to_file(controller.grocery_lists)
+
+        # Show the view lists screen
+        controller.show_view_lists()
+
+    except ValueError:
+        # Show error label
+        error_label = ctk.CTkLabel(
+            root,
+            text="Error: Please ensure all selected items have a valid quantity.",
+            font=("Helvetica", 12),
+            text_color="red"
+        )
+        error_label.pack(pady=10)
+
+
+def load_grocery_lists():
+    if os.path.exists(GROCERY_LISTS_FILE):
+        try:
+            with open(GROCERY_LISTS_FILE, "r") as file:
+                return json.load(file)
+        except json.JSONDecodeError:
+            print("Error reading grocery lists file.")
+            return {}
+    return {}
+
+def save_grocery_lists_to_file(lists):
+    with open(GROCERY_LISTS_FILE, "w") as file:
+        json.dump(lists, file, indent=4)
+
+def create_list(root, controller, list_name, selected_items):
+    try:
+        # Validate quantities
+        for item, data in selected_items.items():
+            if data["selected"] and (data["quantity"] is None or data["quantity"].get() <= 0):
+                raise ValueError("Invalid quantity")
+
+        # Save the list
+        grocery_list = {
+            item: {"quantity": data["quantity"].get()} for item, data in selected_items.items() if data["selected"]
+        }
+        controller.grocery_lists[list_name] = grocery_list
+        save_grocery_lists_to_file(controller.grocery_lists)
+
+        # Show the view lists screen
+        controller.show_view_lists()
+
+    except ValueError:
+        # Show error label
+        error_label = ctk.CTkLabel(
+            root,
+            text="Error: Please ensure all selected items have a valid quantity.",
+            font=("Helvetica", 12),
+            text_color="red"  # Corrected from fg="red"
+        )
+        error_label.pack(pady=10)
+

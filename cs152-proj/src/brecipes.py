@@ -2,8 +2,38 @@ import json
 import os
 import customtkinter as ctk
 from utilities import clear_window
-from recipe_data import saved_recipes
 from PIL import Image
+
+SAVED_RECIPES_FILE = os.path.join(os.path.dirname(__file__), "saved_recipes.json")
+
+def load_saved_recipes():
+    if os.path.exists(SAVED_RECIPES_FILE):
+        try:
+            with open(SAVED_RECIPES_FILE, "r") as file:
+                return json.load(file)
+        except json.JSONDecodeError:
+            print("Error reading saved recipes file.")
+            return []
+    return []
+
+def save_recipes_to_file(recipes):
+    with open(SAVED_RECIPES_FILE, "w") as file:
+        json.dump(recipes, file, indent=4)
+
+saved_recipes = load_saved_recipes() 
+
+def save_recipe():
+    global selected_recipe
+    if selected_recipe:
+        recipe_name = selected_recipe["name"] if isinstance(selected_recipe, dict) else selected_recipe
+        if recipe_name not in saved_recipes:  # Prevent duplicates
+            saved_recipes.append(recipe_name)
+            save_recipes_to_file(saved_recipes)  # Persist the data
+            print(f"Saved: {recipe_name}")
+        else:
+            print("Recipe already saved!")
+    else:
+        print("No recipe selected")
 
 def load_recipes():
     file_path = os.path.join(os.path.dirname(__file__), 'recipes.json')
@@ -26,140 +56,138 @@ def browse_recipes(root, controller):
     main_container = ctk.CTkFrame(root)
     main_container.pack(pady=10, padx=10, fill="both", expand=True)
 
-    sidebar_frame = ctk.CTkFrame(main_container, width=125, height=600, corner_radius=10)
-    sidebar_frame.grid(row=0, column=0, padx=20, pady=20, sticky="ns")
+    # Configure grid layout
+    main_container.grid_columnconfigure(0, weight=0, minsize=150)  # Sidebar
+    main_container.grid_columnconfigure(1, weight=1)  # Main content
+    main_container.grid_rowconfigure(1, weight=1)  # Scrollable frame
 
-    sidebar_frame.grid_propagate(False)
-    sidebar_frame.pack_propagate(False)
-
-    main_container.grid_columnconfigure(0, weight=0, minsize=100) 
-    main_container.grid_columnconfigure(1, weight=1)  
-    main_container.grid_rowconfigure(0, weight=1)  
+    sidebar_frame = ctk.CTkFrame(main_container, width=125, corner_radius=10)
+    sidebar_frame.grid(row=0, column=0, rowspan=2, padx=20, pady=20, sticky="ns")
 
     recipe_data = load_recipes()
+    selected_items = []  # Stores the names of selected recipes
+
+    # Search bar
+    search_entry = ctk.CTkEntry(main_container, placeholder_text="Search for recipes...", width=520)
+    search_entry.grid(row=0, column=1, padx=20, pady=(10, 0), sticky="ew")
+
+    # Scrollable frame for recipes
+    scrollable_frame = ctk.CTkScrollableFrame(main_container, width=600, corner_radius=10)
+    scrollable_frame.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
 
     def show_recipes(category=None, search_query=""):
-        global selected_recipe
-
-        for widget in recipes_frame.winfo_children():
+        for widget in scrollable_frame.winfo_children():
             widget.destroy()
-
-        header.configure(text="Recipes")
 
         if category:
             recipes_to_display = recipe_data.get(category, [])
         else:
             recipes_to_display = []
-            for category, recipes in recipe_data.items():
-                for recipe in recipes:
-                    if search_query.lower() in recipe.lower():
-                        recipes_to_display.append(recipe)
+            for items in recipe_data.values():
+                recipes_to_display.extend(items)
+
+        if search_query:
+            search_query = search_query.lower()
+            recipes_to_display = [
+                item for item in recipes_to_display if search_query in item["name"].lower()
+            ]
 
         for idx, item in enumerate(recipes_to_display):
-            row = idx // 4
-            column = idx % 4
-
             image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
-            item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  
-            
+            item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))
+
+            fg_color = "#3b82f6" if item["name"] in selected_items else "transparent"
+
+            def create_button_callback(item_name, button):
+                return lambda: toggle_selection(item_name, button)
+
             item_button = ctk.CTkButton(
-                recipes_frame, 
+                scrollable_frame,
+                text=item["name"],
                 image=item_image,
                 compound="top",
-                text=item["name"], 
                 font=("Helvetica", 14),
-                command=lambda item=item: set_selected_recipe(item),  
-                fg_color="transparent",
-                border_width=0
+                fg_color=fg_color,
+                hover_color="#e0e0e0",
             )
-            item_button.grid(row=row, column=column, padx=60, pady=60)
+            item_button.configure(command=create_button_callback(item["name"], item_button))
+            item_button.grid(row=idx // 3, column=idx % 3, padx=30, pady=20)
 
-    button1 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Soup", 
-        command=lambda: show_recipes("Soup"),
-        width=120,
-        height=40,
-        corner_radius=10   
-    )
-    button1.pack(pady=10, padx=10, anchor="w")
+    def toggle_selection(item_name, button):
+        if item_name in selected_items:
+            selected_items.remove(item_name)
+            button.configure(fg_color="transparent")  # Deselect
+        else:
+            selected_items.append(item_name)
+            button.configure(fg_color="#3b82f6")  # Highlight as selected
 
-    button2 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Baked", 
-        command=lambda: show_recipes("Baked"),
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    button2.pack(pady=10, padx=10, anchor="w")
+    def save_selected_recipes():
+        global saved_recipes
+        for recipe in selected_items:
+            if recipe not in saved_recipes:
+                saved_recipes.append(recipe)
+        save_recipes_to_file(saved_recipes)
 
-    button3 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Deep Fried", 
-        command=lambda: show_recipes("Fried/Deep Fried"),
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    button3.pack(pady=10, padx=10, anchor="w")
+        # Reset the selection
+        selected_items.clear()
 
-    button4 = ctk.CTkButton(
-        sidebar_frame, 
-        text="Vegetarian", 
-        command=lambda: show_recipes("Vegetarian"),
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    button4.pack(pady=10, padx=10, anchor="w")
+        # Refresh the display to reset button states
+        show_recipes()
 
-    save_button = ctk.CTkButton(
-        sidebar_frame, 
-        text="Save", 
-        command=save_recipe,
-        width=120,
-        height=40,
-        corner_radius=10
-    )
-    save_button.pack(pady=20, padx=10, anchor="w")
-
-    main_frame = ctk.CTkFrame(main_container, width=600, height=600, corner_radius=10)
-    main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")  # Expands to fill available space
-    
-    search_entry = ctk.CTkEntry(main_frame, placeholder_text="Search for recipes...", width=520)
-    search_entry.pack(pady=10)
-
+    # Real-time search functionality
     def on_search_change(event=None):
         search_query = search_entry.get()
         show_recipes(search_query=search_query)
 
     search_entry.bind("<KeyRelease>", on_search_change)
 
-    recipes_frame = ctk.CTkFrame(main_frame)
-    recipes_frame.pack(fill="both", expand=True, padx=20, pady=20)
-
-    back_button = ctk.CTkButton(
-        sidebar_frame, 
-        text="Back to Homepage", 
-        command=controller.show_homepage,
-        width=120, 
-        height=40, 
-        corner_radius=10,
-        font=("Helvetica", 10)
+    # All button to show all recipes
+    all_button = ctk.CTkButton(
+        sidebar_frame,
+        text="All",
+        command=lambda: show_recipes(),
+        width=120,
+        height=40,
+        corner_radius=10
     )
-    back_button.pack(padx=10, pady=60)
+    all_button.pack(pady=(10, 10), padx=10, anchor="w")
 
-def set_selected_recipe(item): 
-    global selected_recipe
-    selected_recipe = item
-    print(f"selected {selected_recipe}") 
+    # Sidebar buttons for categories
+    for category in recipe_data.keys():
+        category_button = ctk.CTkButton(
+            sidebar_frame,
+            text=category,
+            command=lambda cat=category: show_recipes(cat),
+            width=120,
+            height=40,
+            corner_radius=10
+        )
+        category_button.pack(pady=10, padx=10, anchor="w")
 
-def save_recipe():
-    global selected_recipe
-    if selected_recipe:
-        recipe_name = selected_recipe["name"] if isinstance(selected_recipe, dict) else selected_recipe
-        saved_recipes.append(recipe_name)
-        print(f"saved: {recipe_name}") 
-    else:
-        print("no recipe selected")
+
+    # Save button
+    save_button = ctk.CTkButton(
+        sidebar_frame,
+        text="Save",
+        command=save_selected_recipes,
+        width=120,
+        height=40,
+        corner_radius=10,
+        font=("Helvetica", 14)
+    )
+    save_button.pack(pady=(60, 10))
+
+    # Back button
+    back_button = ctk.CTkButton(
+        sidebar_frame,
+        text="Back",
+        command=controller.show_homepage,
+        width=120,
+        height=40,
+        corner_radius=10,
+        font=("Helvetica", 14)
+    )
+    back_button.pack(pady=10)
+
+    # Show all recipes by default
+    show_recipes()

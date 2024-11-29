@@ -2,7 +2,6 @@ import json
 import os
 import customtkinter as ctk
 from utilities import clear_window
-from recipe_data import saved_groceries
 from PIL import Image
 
 def load_groceries():
@@ -58,8 +57,8 @@ def browse_groceries(root, controller):
                         groceries_to_display.append(grocery)
         
         for idx, item in enumerate(groceries_to_display):
-                row = idx // 4
-                column = idx % 4
+                row = idx // 3
+                column = idx % 3
 
                 image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
                 item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  
@@ -137,19 +136,21 @@ def browse_groceries(root, controller):
         show_groceries(search_query=search_query)
     search_entry.bind("<KeyRelease>", on_search_change)
 
-    groceries_frame = ctk.CTkFrame(main_frame)
+    groceries_frame = ctk.CTkScrollableFrame(main_frame, width=520, height=400, corner_radius=10)
     groceries_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+    show_groceries()
 
     back_button = ctk.CTkButton(
         sidebar_frame, 
-        text="Back to Homepage", 
+        text="Back", 
         command=controller.show_homepage,
         width=120, 
         height=40, 
         corner_radius=10,
         font=("Helvetica", 10)
     )
-    back_button.pack(padx=10, pady=60)
+    back_button.pack(padx=10, pady=50)
 
 
 def set_selected_groceries(item):
