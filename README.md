@@ -1,45 +1,81 @@
 # Grocery To-Do List
-
-## Description
+### Description
 
 This is a simple app to help users create and manage grocery lists and save recipes. It has a clean and easy-to-use interface built with Python and customtkinter.
 
 ## Features
-Create, edit, and delete grocery lists.
-Browse groceries by category and select items.
-Save favorite recipes and view them later.
-Search groceries and recipes quickly.
-Automatically saves data using JSON files.
 
-##Getting Started
+* Create, edit, and delete grocery lists.
+* Browse groceries by category and select items.
+* Save favorite recipes and view them later.
+* Search groceries and recipes quickly.
+* Automatically saves data using JSON files.
+
+## Getting Started
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* ***Python 3.10*** or higher
+* Libraries:
+  * `customtkinter`
+  * `os`
+  * `json`
+  * `PIL`
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+1. Clone the repository:
+   ```
+   git clone https://github.com/fungjessica/cs152-proj.git
+   ```
+2. Go to the project folder:
+   ```
+   cd cs152-proj
+   ```
+3. Install the required libraries:
+   ```
+   pip install customtkinter
+   pip install pillow
+   ```
 
-### Executing program
+### Running the App
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
+1. Start the program:
+   ```
+   python app.py
+   ```
+2. Use the app to create lists, browse recipes, and save items.
+
+## How to use
+
+1. **Create a New Grocery List**
+    * Click "Create a New List."
+    * Enter a list name.
+    * Browse groceries by category, select items, and set quantities.
+    * Save the list.
+2. **Browse Recipes**
+    * Go to "Browse Recipes" to see available recipes.
+    * Click on a recipe item to select it
+    * Use the "Save" button to save selected recipes, which can be viewed later in the "Saved Recipes" section.
+3. **View Saved Recipes**
+    * Open "Saved Recipes" to see recipes you’ve saved before.
+4. **View and Edit Grocery Lists**
+    * Go to "View Lists" to see all saved grocery lists.
+    * Edit or delete lists as needed.
 
 ## Help
 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+If you run into issues:
+* Make sure you've installed the required libraries:
+   ```
+   pip install customtkinter
+   pip install pillow
+   ```
+* Check your Python version:
+   ```
+   Python --version
+   ```
 
 ## Authors
 
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+* Jessica Fung
+* Swan Pyae Sone Tun
