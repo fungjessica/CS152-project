@@ -1,4 +1,4 @@
-#import customtkinter as ctk
+import customtkinter as ctk
 from utilities import clear_window
 import os
 import json
