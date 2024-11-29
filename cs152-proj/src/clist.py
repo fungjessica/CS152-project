@@ -195,7 +195,7 @@ def choose_items_flow(root, controller, list_name):
     back_button.pack(pady=10)
 
     # Function to proceed to quantity selection
-    def proceed_to_quantities():
+     proceed_to_quantities():
         if selected_items:
             selected_items_dict = {item: {"selected": True, "quantity": None} for item in selected_items}
             set_quantities_flow(root, controller, list_name, selected_items_dict)
