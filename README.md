@@ -25,11 +25,11 @@ This is a simple app to help users create and manage grocery lists and save reci
 
 1. Clone the repository:
    ```
-   git clone https://github.com/fungjessica/cs152-proj.git
+   git clone https://github.com/fungjessica/CS152-project.git
    ```
 2. Go to the project folder:
    ```
-   cd cs152-proj
+   cd CS152-project
    ```
 3. Install the required libraries:
    ```
