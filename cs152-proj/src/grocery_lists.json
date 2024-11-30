@@ -1,1 +1,10 @@
-{}
+{
+    "q": {
+        "Watermelon": {
+            "quantity": 1
+        },
+        "Oranges": {
+            "quantity": 1
+        }
+    }
+}

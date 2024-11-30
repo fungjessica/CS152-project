@@ -1,8 +1,11 @@
 import customtkinter as ctk
 from utilities import clear_window
 from clist import save_grocery_lists_to_file
+from clist import choose_items_flow
+from clist import is_creating_list, toggle
 
 def view_lists(root, controller):
+
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="View Grocery Lists", font=("Helvetica", 24, "bold"))
@@ -66,13 +69,15 @@ def view_lists(root, controller):
     back_button.pack(pady=20)
 
 def view_list_details(root, controller, idx):
+    global is_creating_list
+    is_creating_list = False
+    toggle()
+
     list_name = list(controller.grocery_lists.keys())[idx]
     items = controller.grocery_lists[list_name]
 
-    # Get the done items
     done_items = controller.grocery_lists[list_name].get("done_items", [])
-
-    # Remove the done items from the main list
+    
     active_items = {k: v for k, v in items.items() if k not in done_items}
 
     clear_window(root)
@@ -80,19 +85,16 @@ def view_list_details(root, controller, idx):
     header = ctk.CTkLabel(root, text=f"List: {list_name}", font=("Helvetica", 24, "bold"))
     header.pack(pady=20)
 
-    # Create a scrollable frame for items
     scrollable_frame = ctk.CTkScrollableFrame(root, width=600, height=300, corner_radius=10)
     scrollable_frame.pack(fill="both", pady=10, padx=20, expand=True)
 
     scrollable_frame.grid_columnconfigure(0, weight=1)
 
-    # Add column titles
     ctk.CTkLabel(scrollable_frame, text="Items", font=("Helvetica", 16, "bold")).grid(row=0, column=0, padx=10, pady=5, sticky="w")
     ctk.CTkLabel(scrollable_frame, text="Quantity", font=("Helvetica", 16, "bold")).grid(row=0, column=1, padx=10, pady=5, sticky="e")
 
     item_vars = {}
 
-    # Display active (non-done) items
     for row, (item, data) in enumerate(active_items.items(), start=1):
         ctk.CTkLabel(scrollable_frame, text=item, font=("Helvetica", 14)).grid(row=row, column=0, padx=10, pady=5, sticky="w")
         ctk.CTkLabel(scrollable_frame, text=str(data['quantity']), font=("Helvetica", 14)).grid(row=row, column=1, padx=40, pady=5, sticky="e")
@@ -104,14 +106,17 @@ def view_list_details(root, controller, idx):
 
     display_done_and_delete_buttons(root, controller, list_name, item_vars)
 
-    # --- Done Items Section ---
-    #done_frame = ctk.CTkFrame(root)
-    #done_frame.pack(fill="x", pady=20)
+    add_more_button = ctk.CTkButton(
+        root,
+        text="Add More Groceries",
+        command=lambda: choose_items_flow(root, controller, list_name),  
+        width=200,
+        height=40,
+        corner_radius=10,
+        font=("Helvetica", 14)
+    )
+    add_more_button.pack(pady=10)
 
-    # Call the function to display done items (now separated)
-    #display_done_items(done_frame, controller, list_name)
-
-    # Back button
     back_button = ctk.CTkButton(
         root,
         text="Back to Lists",
@@ -124,15 +129,6 @@ def view_list_details(root, controller, idx):
     back_button.pack(pady=10)
 
 def display_done_and_delete_buttons(root, controller, list_name, item_vars):
-    #done_button = ctk.CTkButton(
-    #    root, 
-    #    text="Done", 
-    #    command=lambda: mark_items_done(root, controller, list_name, item_vars),
-    #    width=150, 
-    #    height=40, 
-    #    corner_radius=10,
-    #    font=("Helvetica", 14)
-    #)
 
     delete_button = ctk.CTkButton(
         root, 
@@ -144,15 +140,12 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
         font=("Helvetica", 14)
     )
 
-    #done_button.pack_forget()
     delete_button.pack_forget()
 
     def check_selection():
         if any(var.get() for var in item_vars.values()):
-            #done_button.pack(pady=10)
             delete_button.pack(pady=10)
         else:
-            #done_button.pack_forget()
             delete_button.pack_forget()
 
     for var in item_vars.values():
@@ -161,56 +154,33 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
     check_selection()
 
 def mark_items_done(root, controller, list_name, item_vars):
-    """Move the selected items to the Done section."""
     selected_items = [var.get() for var in item_vars.values() if var.get()]
     
     if not selected_items:
         return
 
-    # Ensure the "done_items" section exists for this list
     if "done_items" not in controller.grocery_lists[list_name]:
         controller.grocery_lists[list_name]["done_items"] = {}
 
-    # Move selected items to the "done_items" section with their quantities
     for item in selected_items:
         if item in controller.grocery_lists[list_name]:
             quantity = controller.grocery_lists[list_name].pop(item)
             controller.grocery_lists[list_name]["done_items"][item] = quantity
 
-    # Refresh the list details after marking items as done
     view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
 
 def delete_items_from_list(root, controller, list_name, item_vars):
-    """Delete the selected items from the list."""
     selected_items = [var.get() for var in item_vars.values() if var.get()]
     
     if not selected_items:
         return
 
-    # Delete the selected items
     for item in selected_items:
         if item in controller.grocery_lists[list_name]:
             del controller.grocery_lists[list_name][item]
 
     save_grocery_lists_to_file(controller.grocery_lists)
-    # Refresh the list details
     view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
-
-#def display_done_items(done_frame, controller, list_name):
-#    """Displays the items marked as done in a separate section."""
-#    done_items = controller.grocery_lists[list_name].get("done_items", {})
-#    
-    # Clear the frame before displaying done items
-#    for widget in done_frame.winfo_children():
-#        widget.destroy()
-#
-#    if done_items:
-#        header = ctk.CTkLabel(done_frame, text="Done Items", font=("Helvetica", 20, "bold"))
-#        header.pack(pady=10)
-#
-#        for item, quantity in done_items.items():
-#            item_label = ctk.CTkLabel(done_frame, text=f"{item} - {quantity}", font=("Helvetica", 14))
-#            item_label.pack(pady=5, padx=10)
 
 def rename_list(root, controller, idx):
     list_name = list(controller.grocery_lists.keys())[idx]
