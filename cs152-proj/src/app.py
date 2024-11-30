@@ -11,6 +11,7 @@ class AppController:
         self.root = root
         self.grocery_lists = load_grocery_lists()
         self.done_items = {}     
+        self.is_creating_list = True
 
         self.appearance_mode = "dark"
         ctk.set_appearance_mode(self.appearance_mode)
@@ -21,6 +22,11 @@ class AppController:
 
         self.show_homepage()
 
+    def set_creating_list(self, value: bool):
+        self.is_creating_list = value
+    def toggle_creating_list(self):
+        self.is_creating_list = not self.is_creating_list
+        
     def show_homepage(self):
         show_homepage(self.root, self)  
 

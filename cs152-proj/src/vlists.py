@@ -2,9 +2,10 @@ import customtkinter as ctk
 from utilities import clear_window
 from clist import save_grocery_lists_to_file
 from clist import choose_items_flow
-from clist import is_creating_list, toggle
+from clist import is_creating_list
 
 def view_lists(root, controller):
+    controller.set_creating_list(False)
 
     clear_window(root)
 
@@ -69,9 +70,7 @@ def view_lists(root, controller):
     back_button.pack(pady=20)
 
 def view_list_details(root, controller, idx):
-    global is_creating_list
-    is_creating_list = False
-    toggle()
+    
 
     list_name = list(controller.grocery_lists.keys())[idx]
     items = controller.grocery_lists[list_name]

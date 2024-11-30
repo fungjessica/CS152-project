@@ -7,13 +7,12 @@ from PIL import Image
 import tkinter as tk
 
 is_creating_list = True
-def toggle():
-    global is_creating_list
-    is_creating_list = not is_creating_list
 
 GROCERY_LISTS_FILE = os.path.join(os.path.dirname(__file__), "grocery_lists.json")
 
 def create_list_flow(root, controller):
+    controller.set_creating_list(True)
+    
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="Create a New Grocery List", font=("Helvetica", 24, "bold"))
@@ -48,9 +47,7 @@ def create_list_flow(root, controller):
     back_button.pack(pady=10)
 
 def validate_list_name(root, controller, list_name_entry, warning_label):
-    global is_creating_list
-    is_creating_list = True
-    toggle()
+    
 
     list_name = list_name_entry.get().strip()  
 
@@ -179,7 +176,7 @@ def choose_items_flow(root, controller, list_name):
         text_color="#ffffff", 
     )
     proceed_button.pack(pady=(60, 10))
-
+    
     back_button = ctk.CTkButton(
         sidebar_frame,
         text="Back",
@@ -354,16 +351,15 @@ def create_list(root, controller, list_name, selected_items):
 def load_grocery_lists():
     if os.path.exists(GROCERY_LISTS_FILE):
         try:
-            with open(GROCERY_LISTS_FILE, "r") as file:
-                return json.load(file)
-        except json.JSONDecodeError:
-            print("Error reading grocery lists file.")
+            with open('grocery_lists.json', 'r') as file:
+                return json.load(file)  # Load existing grocery lists from file
+        except FileNotFoundError:
             return {}
-    return {}
 
-def save_grocery_lists_to_file(lists):
-    with open(GROCERY_LISTS_FILE, "w") as file:
-        json.dump(lists, file, indent=4)
+def save_grocery_lists_to_file(grocery_lists):
+    with open('grocery_lists.json', 'w') as file:
+        json.dump(grocery_lists, file, indent=4)
+
 
 def create_list(root, controller, list_name, selected_items):
     try:
