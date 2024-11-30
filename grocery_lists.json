@@ -1,1 +1,29 @@
-{}
+{
+    "test": {
+        "Apple": {
+            "quantity": 1
+        },
+        "Bananas": {
+            "quantity": 1
+        },
+        "Potatoes": {
+            "quantity": 1
+        }
+    },
+    "test2": {
+        "Watermelon": {
+            "quantity": 1
+        },
+        "Oranges": {
+            "quantity": 1
+        }
+    },
+    "test3": {
+        "Broccoli": {
+            "quantity": 1
+        },
+        "Chicken Breast": {
+            "quantity": 1
+        }
+    }
+}

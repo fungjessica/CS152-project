@@ -10,6 +10,7 @@ is_creating_list = True
 
 GROCERY_LISTS_FILE = os.path.join(os.path.dirname(__file__), "grocery_lists.json")
 
+#function to create a grocery list
 def create_list_flow(root, controller):
     controller.set_creating_list(True)
     
@@ -46,9 +47,8 @@ def create_list_flow(root, controller):
     )
     back_button.pack(pady=10)
 
+#function to make sure list name is not blank
 def validate_list_name(root, controller, list_name_entry, warning_label):
-    
-
     list_name = list_name_entry.get().strip()  
 
     if not list_name: 
@@ -58,6 +58,7 @@ def validate_list_name(root, controller, list_name_entry, warning_label):
     else:
         choose_items_flow(root, controller, list_name)
 
+#function to choose groceries
 def choose_items_flow(root, controller, list_name):
     clear_window(root)
 
@@ -83,6 +84,7 @@ def choose_items_flow(root, controller, list_name):
     scrollable_frame = ctk.CTkScrollableFrame(main_container, width=600, corner_radius=10)
     scrollable_frame.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
 
+    #function to show groceries in grid format
     def show_groceries(category=None, search_query=""):
         for widget in scrollable_frame.winfo_children():
             widget.destroy()
@@ -121,6 +123,7 @@ def choose_items_flow(root, controller, list_name):
             item_button.configure(command=create_button_callback(item["name"], item_button))
             item_button.grid(row=idx // 4, column=idx % 4, padx=30, pady=20)
 
+    #function to allow selection 
     def toggle_selection(item_name, button):
         if item_name in selected_items:
             selected_items.remove(item_name)
@@ -130,12 +133,14 @@ def choose_items_flow(root, controller, list_name):
             button.configure(fg_color="#3b82f6")  
         update_proceed_button_state()
 
+    #function to disable/enable proceed button (makes sure user has selected something in order to continue)
     def update_proceed_button_state():
         if selected_items:
             proceed_button.configure(state="normal", fg_color="#3b82f6")
         else:
             proceed_button.configure(state="disabled", fg_color="#a0a0a0")
 
+    #function to allow search bar input
     def on_search_change(event=None):
         search_query = search_entry.get()
         show_groceries(search_query=search_query)
@@ -195,6 +200,7 @@ def choose_items_flow(root, controller, list_name):
 
     show_groceries()
 
+#function to set grocery quantity
 def set_quantities_flow(root, controller, list_name, selected_items):
     clear_window(root)
 
@@ -216,6 +222,7 @@ def set_quantities_flow(root, controller, list_name, selected_items):
     quantity_title = ctk.CTkLabel(title_frame, text="Quantity", font=("Helvetica", 16, "bold"))
     quantity_title.grid(row=0, column=1, padx=55, sticky="e")
 
+    #display selected groceries and quantity
     for idx, (item, data) in enumerate(selected_items.items()):
         if data["selected"]:  
             item_frame = ctk.CTkFrame(scrollable_frame)
@@ -248,7 +255,9 @@ def set_quantities_flow(root, controller, list_name, selected_items):
             )
             plus_button.pack(side="left")
 
-    if not is_creating_list:
+    #check if user is creating list
+    #if user is adding to an existing list, change button 
+    if controller.is_creating_list:
         create_button = ctk.CTkButton(
             root, 
             text="Create List", 
@@ -282,6 +291,7 @@ def set_quantities_flow(root, controller, list_name, selected_items):
     )
     back_button.pack(pady=10)
 
+#function to add groceries to existing list 
 def add_to_list(root, controller, list_name, selected_items):
     try:
         existing_lists = controller.grocery_lists  
@@ -311,16 +321,17 @@ def add_to_list(root, controller, list_name, selected_items):
         )
         error_label.pack(pady=10)
 
-
+#function to increase quantity in quantity page
 def increase_quantity(item_name, selected_items):
     current_qty = selected_items[item_name]["quantity"].get()
     selected_items[item_name]["quantity"].set(current_qty + 1)
-
+#function to decrease quantity in quantity page
 def decrease_quantity(item_name, selected_items):
     current_qty = selected_items[item_name]["quantity"].get()
     if current_qty > 1: 
         selected_items[item_name]["quantity"].set(current_qty - 1)
 
+#function to create the new list
 def create_list(root, controller, list_name, selected_items):
     try:
         for item, data in selected_items.items():
@@ -341,46 +352,25 @@ def create_list(root, controller, list_name, selected_items):
     except ValueError:
         error_label = ctk.CTkLabel(
             root,
-            text="Error: Please ensure all selected items have a valid quantity.",
+            text="Error: Please make sure selected items have a valid quantity",
             font=("Helvetica", 12),
             text_color="red"
         )
         error_label.pack(pady=10)
 
-
+#funciton to load grocery lists
 def load_grocery_lists():
     if os.path.exists(GROCERY_LISTS_FILE):
         try:
             with open('grocery_lists.json', 'r') as file:
-                return json.load(file)  # Load existing grocery lists from file
+                return json.load(file)  
         except FileNotFoundError:
             return {}
 
+#function to save newly created groceries to JSON file
 def save_grocery_lists_to_file(grocery_lists):
     with open('grocery_lists.json', 'w') as file:
         json.dump(grocery_lists, file, indent=4)
 
 
-def create_list(root, controller, list_name, selected_items):
-    try:
-        for item, data in selected_items.items():
-            if data["selected"] and (data["quantity"] is None or data["quantity"].get() <= 0):
-                raise ValueError("Invalid quantity")
-
-        grocery_list = {
-            item: {"quantity": data["quantity"].get()} for item, data in selected_items.items() if data["selected"]
-        }
-        controller.grocery_lists[list_name] = grocery_list
-        save_grocery_lists_to_file(controller.grocery_lists)
-
-        controller.show_view_lists()
-
-    except ValueError:
-        error_label = ctk.CTkLabel(
-            root,
-            text="Error: Please ensure all selected items have a valid quantity.",
-            font=("Helvetica", 12),
-            text_color="red"  
-        )
-        error_label.pack(pady=10)
 

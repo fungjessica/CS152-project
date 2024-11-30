@@ -1,9 +1,11 @@
 import customtkinter as ctk
 
+#close the window
 def clear_window(root):
     for widget in root.winfo_children():
         widget.destroy()
 
+#toggle between light/dark mode
 def toggle_mode(controller):
     if controller.appearance_mode == "dark":
         controller.appearance_mode = "light"
@@ -14,6 +16,7 @@ def toggle_mode(controller):
         ctk.set_appearance_mode("dark")
         controller.mode_toggle_button.configure(text="Light Mode")
 
+#close the app
 def quit_app(root):
     quit_button = ctk.CTkButton(
         root,

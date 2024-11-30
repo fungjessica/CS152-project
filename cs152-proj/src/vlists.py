@@ -4,6 +4,7 @@ from clist import save_grocery_lists_to_file
 from clist import choose_items_flow
 from clist import is_creating_list
 
+#function to view created grocery lists
 def view_lists(root, controller):
     controller.set_creating_list(False)
 
@@ -12,6 +13,8 @@ def view_lists(root, controller):
     header = ctk.CTkLabel(root, text="View Grocery Lists", font=("Helvetica", 24, "bold"))
     header.pack(pady=30)
 
+    #check if any grocery lists have been created
+    #if yes, show the created lists
     if not controller.grocery_lists:
         empty_label = ctk.CTkLabel(root, text="No grocery lists created.", font=("Helvetica", 16))
         empty_label.pack(pady=20)
@@ -69,9 +72,8 @@ def view_lists(root, controller):
     )
     back_button.pack(pady=20)
 
+#function to show a grocery list and its saved groceries
 def view_list_details(root, controller, idx):
-    
-
     list_name = list(controller.grocery_lists.keys())[idx]
     items = controller.grocery_lists[list_name]
 
@@ -94,6 +96,7 @@ def view_list_details(root, controller, idx):
 
     item_vars = {}
 
+    #show the saved groceries
     for row, (item, data) in enumerate(active_items.items(), start=1):
         ctk.CTkLabel(scrollable_frame, text=item, font=("Helvetica", 14)).grid(row=row, column=0, padx=10, pady=5, sticky="w")
         ctk.CTkLabel(scrollable_frame, text=str(data['quantity']), font=("Helvetica", 14)).grid(row=row, column=1, padx=40, pady=5, sticky="e")
@@ -127,8 +130,8 @@ def view_list_details(root, controller, idx):
     )
     back_button.pack(pady=10)
 
+#function for the done and delete buttons (only delete button is used)
 def display_done_and_delete_buttons(root, controller, list_name, item_vars):
-
     delete_button = ctk.CTkButton(
         root, 
         text="Delete", 
@@ -141,6 +144,7 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
 
     delete_button.pack_forget()
 
+    #function to check if any groceries are selected
     def check_selection():
         if any(var.get() for var in item_vars.values()):
             delete_button.pack(pady=10)
@@ -152,6 +156,7 @@ def display_done_and_delete_buttons(root, controller, list_name, item_vars):
 
     check_selection()
 
+#function to mark groceries as done (not used)
 def mark_items_done(root, controller, list_name, item_vars):
     selected_items = [var.get() for var in item_vars.values() if var.get()]
     
@@ -168,6 +173,7 @@ def mark_items_done(root, controller, list_name, item_vars):
 
     view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
 
+#function to delete selected groceries from the list
 def delete_items_from_list(root, controller, list_name, item_vars):
     selected_items = [var.get() for var in item_vars.values() if var.get()]
     
@@ -181,6 +187,7 @@ def delete_items_from_list(root, controller, list_name, item_vars):
     save_grocery_lists_to_file(controller.grocery_lists)
     view_list_details(root, controller, list(controller.grocery_lists.keys()).index(list_name))
 
+#function to rename a list
 def rename_list(root, controller, idx):
     list_name = list(controller.grocery_lists.keys())[idx]
 
@@ -227,6 +234,7 @@ def rename_list(root, controller, idx):
     )
     cancel_button.pack(side="right", padx=10, pady=(0,10))
 
+#function to delete a list
 def delete_list(root, controller, idx):
     list_name = list(controller.grocery_lists.keys())[idx]
     del controller.grocery_lists[list_name]

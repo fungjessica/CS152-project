@@ -4,6 +4,7 @@ import customtkinter as ctk
 from utilities import clear_window
 from PIL import Image
 
+#load groceries from groceries.json
 def load_groceries():
     file_path = os.path.join(os.path.dirname(__file__), 'groceries.json')
 
@@ -12,13 +13,13 @@ def load_groceries():
             groceries_data = json.load(file)
         return groceries_data
     except json.JSONDecodeError:
-        print("Error decoding JSON file.")
+        print("Error with JSON file")
         return {}
 
 selected_groceries = None
 
+#function to allow user to browse for groceries
 def browse_groceries(root, controller):
-    """Allows users to browse available grocery items with images."""
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="Browse Groceries", font=("Helvetica", 24, "bold"))
@@ -39,6 +40,7 @@ def browse_groceries(root, controller):
 
     groceries_data = load_groceries()
 
+    #show groceries from JSON
     def show_groceries(category=None, search_query=""):
         global selected_groceries
 
@@ -56,9 +58,10 @@ def browse_groceries(root, controller):
                     if search_query.lower() in grocery["name"].lower():
                         groceries_to_display.append(grocery)
         
+        #show groceries in grid format
         for idx, item in enumerate(groceries_to_display):
-                row = idx // 3
-                column = idx % 3
+                row = idx // 4
+                column = idx % 4
 
                 image_path = os.path.join(os.path.dirname(__file__), "images", item["image"])
                 item_image = ctk.CTkImage(Image.open(image_path), size=(50, 50))  
@@ -131,6 +134,7 @@ def browse_groceries(root, controller):
     search_entry = ctk.CTkEntry(main_frame, placeholder_text="Search for groceries...", width=520)
     search_entry.pack(pady=10)
 
+    #allow search bar input
     def on_search_change(event=None):
         search_query = search_entry.get()
         show_groceries(search_query=search_query)
@@ -152,12 +156,13 @@ def browse_groceries(root, controller):
     )
     back_button.pack(padx=10, pady=50)
 
-
+#add selected groceries to array
 def set_selected_groceries(item):
     global selected_groceries
     selected_groceries = item
     print(f"selected {selected_groceries}")
 
+#save groceries to array (not used)
 def save_groceries():
     global set_selected_groceries
     if selected_groceries:

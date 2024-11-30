@@ -8,25 +8,30 @@ from brecipes import browse_recipes
 
 class AppController:
     def __init__(self, root):
+        #controllers
         self.root = root
         self.grocery_lists = load_grocery_lists()
         self.done_items = {}     
         self.is_creating_list = True
 
+        #dark mode
         self.appearance_mode = "dark"
         ctk.set_appearance_mode(self.appearance_mode)
         ctk.set_default_color_theme("dark-blue")  
 
+        #app size
         self.root.geometry("900x600")
         self.root.title("Grocery To-Do List")
 
         self.show_homepage()
 
+    #toggle bool
     def set_creating_list(self, value: bool):
         self.is_creating_list = value
     def toggle_creating_list(self):
         self.is_creating_list = not self.is_creating_list
         
+    #open pages
     def show_homepage(self):
         show_homepage(self.root, self)  
 
@@ -45,6 +50,7 @@ class AppController:
     def show_browse_recipes(self):
         browse_recipes(self.root, self)
 
+#run the app
 def run_app():
     root = ctk.CTk()  
     app_controller = AppController(root)

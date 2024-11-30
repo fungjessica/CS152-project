@@ -1,15 +1,14 @@
 import customtkinter as ctk
 from utilities import clear_window, toggle_mode, quit_app
 
+#function to show the app's homepage
 def show_homepage(root, controller):
-    """Displays the homepage with navigation options."""
     from utilities import clear_window
     clear_window(root)
 
     header = ctk.CTkLabel(root, text="Grocery To-Do List", font=("Helvetica", 24, "bold"))
     header.pack(pady=30)
 
-    # Button to view grocery lists
     view_lists_button = ctk.CTkButton(
         root,
         text="View Lists",
@@ -21,7 +20,6 @@ def show_homepage(root, controller):
     )
     view_lists_button.pack(pady=20)
 
-    # Button to create a new list
     create_list_button = ctk.CTkButton(
         root,
         text="Create a New List",
@@ -44,7 +42,6 @@ def show_homepage(root, controller):
     )
     browse_recipes_button.pack(pady=20)
 
-    # Button to view saved recipes
     saved_recipes_button = ctk.CTkButton(
         root,
         text="Saved Recipes",
@@ -56,19 +53,6 @@ def show_homepage(root, controller):
     )
     saved_recipes_button.pack(pady=20)
 
-    # Button to browse grocery items
-    # browse_button = ctk.CTkButton(
-    #     root,
-    #     text="Browse Groceries",
-    #     command=controller.show_browse_groceries,
-    #     width=250,
-    #     height=50,
-    #     corner_radius=10,
-    #     font=("Helvetica", 16)
-    # )
-    # browse_button.pack(pady=20)
-    
-    # Mode Toggle Button (Bottom Left)
     controller.mode_toggle_button = ctk.CTkButton(
         root,
         text="Light Mode" if controller.appearance_mode == "dark" else "Dark Mode",
@@ -80,5 +64,4 @@ def show_homepage(root, controller):
     )
     controller.mode_toggle_button.place(relx=0.05, rely=0.95, anchor="sw")
 
-    # Make a quit button at the bottom
     quit_app(root)

@@ -5,22 +5,25 @@ import json
 
 SAVED_RECIPES_FILE = os.path.join(os.path.dirname(__file__), "saved_recipes.json")
 
+#load recipes from JSON file
 def load_saved_recipes():
     if os.path.exists(SAVED_RECIPES_FILE):
         try:
             with open(SAVED_RECIPES_FILE, "r") as file:
                 return json.load(file)
         except json.JSONDecodeError:
-            print("Error reading saved recipes file.")
+            print("Error reading JSON file")
             return []
     return []
 
+#function to save a recipe to the JSON file
 def save_recipes_to_file(recipes):
     with open(SAVED_RECIPES_FILE, "w") as file:
         json.dump(recipes, file, indent=4)
 
 saved_recipes = load_saved_recipes()
 
+#function to show saved recipes
 def view_saved_recipes(root, controller):
     clear_window(root)
     saved_recipes = load_saved_recipes()
@@ -31,6 +34,7 @@ def view_saved_recipes(root, controller):
     recipes_frame = ctk.CTkFrame(root)
     recipes_frame.pack(pady=10, padx=20, fill="both", expand=True)
 
+    #refresh the page if the user adds their own recipe
     def refresh_page():
         for widget in recipes_frame.winfo_children():
             widget.destroy()
@@ -67,6 +71,7 @@ def view_saved_recipes(root, controller):
     recipe_entry = ctk.CTkEntry(input_frame, placeholder_text="Enter a new recipe", width=300, font=("Helvetica", 14))
     recipe_entry.pack(side="left", padx=10)
 
+    #allow the user to add their own recipe and save it to the JSON file
     def add_recipe():
         new_recipe = recipe_entry.get().strip()
         if new_recipe:
@@ -88,6 +93,7 @@ def view_saved_recipes(root, controller):
     )
     add_button.pack(side="left", padx=10)
 
+    #function to delete a recipe 
     def delete_recipe(recipe):
         if recipe in saved_recipes:
             saved_recipes.remove(recipe)
