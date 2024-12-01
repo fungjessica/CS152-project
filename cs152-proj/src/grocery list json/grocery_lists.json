@@ -1,0 +1,23 @@
+{
+    "test": {
+        "Watermelon": {
+            "quantity": 1
+        }
+    },
+    "test2": {
+        "Dragon Fruit": {
+            "quantity": 1
+        },
+        "Ice Cream": {
+            "quantity": 4
+        }
+    },
+    "test3": {
+        "Spinach": {
+            "quantity": 1
+        },
+        "Artichoke": {
+            "quantity": 5
+        }
+    }
+}

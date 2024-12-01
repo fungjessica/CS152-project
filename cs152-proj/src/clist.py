@@ -8,7 +8,10 @@ import tkinter as tk
 
 is_creating_list = True
 
-GROCERY_LISTS_FILE = os.path.join(os.path.dirname(__file__), "grocery_lists.json")
+grocery_list_json = os.path.join(os.path.dirname(__file__), "grocery list json")
+os.makedirs(grocery_list_json, exist_ok=True)
+
+GROCERY_LISTS_FILE = os.path.join(grocery_list_json, "grocery_lists.json")
 
 #function to create a grocery list
 def create_list_flow(root, controller):
@@ -362,14 +365,14 @@ def create_list(root, controller, list_name, selected_items):
 def load_grocery_lists():
     if os.path.exists(GROCERY_LISTS_FILE):
         try:
-            with open('grocery_lists.json', 'r') as file:
+            with open(GROCERY_LISTS_FILE, 'r') as file:
                 return json.load(file)  
         except FileNotFoundError:
             return {}
 
 #function to save newly created groceries to JSON file
 def save_grocery_lists_to_file(grocery_lists):
-    with open('grocery_lists.json', 'w') as file:
+    with open(GROCERY_LISTS_FILE, 'w') as file:
         json.dump(grocery_lists, file, indent=4)
 
 
