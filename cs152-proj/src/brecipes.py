@@ -129,13 +129,12 @@ def browse_recipes(root, controller):
     #save selected recipe
     def save_selected_recipes():
         global saved_recipes
+        saved_recipes = load_saved_recipes()
         for recipe in selected_items:
             if recipe not in saved_recipes:
                 saved_recipes.append(recipe)
         save_recipes_to_file(saved_recipes)
-
         selected_items.clear()
-
         show_recipes()
 
     #allow search bar input

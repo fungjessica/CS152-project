@@ -20,12 +20,14 @@ def load_saved_recipes():
 def save_recipes_to_file(recipes):
     with open(SAVED_RECIPES_FILE, "w") as file:
         json.dump(recipes, file, indent=4)
+    print("updated json file: ", recipes)
 
 saved_recipes = load_saved_recipes()
 
 #function to show saved recipes
 def view_saved_recipes(root, controller):
     clear_window(root)
+    global saved_recipes
     saved_recipes = load_saved_recipes()
 
     header = ctk.CTkLabel(root, text="Saved Recipes", font=("Helvetica", 24, "bold"))
@@ -36,6 +38,9 @@ def view_saved_recipes(root, controller):
 
     #refresh the page if the user adds their own recipe
     def refresh_page():
+        global saved_recipes
+        saved_recipes = load_saved_recipes()
+
         for widget in recipes_frame.winfo_children():
             widget.destroy()
 
@@ -95,12 +100,14 @@ def view_saved_recipes(root, controller):
 
     #function to delete a recipe 
     def delete_recipe(recipe):
+        global saved_recipes
         if recipe in saved_recipes:
             saved_recipes.remove(recipe)
             save_recipes_to_file(saved_recipes)
-        refresh_page()
+            print(f"deleted '{recipe}' from json")
+            refresh_page()
 
-    refresh_page()
+    #refresh_page()
 
     back_button = ctk.CTkButton(
         root,
