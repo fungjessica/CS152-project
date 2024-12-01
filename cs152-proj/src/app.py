@@ -28,8 +28,6 @@ class AppController:
     #toggle bool
     def set_creating_list(self, value: bool):
         self.is_creating_list = value
-    def toggle_creating_list(self):
-        self.is_creating_list = not self.is_creating_list
         
     #open pages
     def show_homepage(self):
